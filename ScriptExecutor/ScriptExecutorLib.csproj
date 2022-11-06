@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageId>TS.Solutions.$(AssemblyName)</PackageId>
+    <Title>Script Executor</Title>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TsSolution.WpfCommon\TsSolution.WpfCommon.csproj" />
+    <ProjectReference Include="..\TsSolutions.Serialization\TsSolutions.Serialization.csproj" />
+    <ProjectReference Include="..\TsSolutions.Service\TsSolutions.Service.csproj" />
+    <ProjectReference Include="..\TsSolutions.Storage\TsSolutions.Storage.csproj" />
+  </ItemGroup>
+
+</Project>
