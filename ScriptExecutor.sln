@@ -11,9 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TsSolutions.Serialization",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TsSolutions.Storage", "TsSolutions.Storage\TsSolutions.Storage.csproj", "{1FEF9EBD-A690-47DE-8A6C-6EE6287508A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsSolutions.Service", "TsSolutions.Service\TsSolutions.Service.csproj", "{C41816C0-B52B-4A8C-9933-7BD28D033B38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TsSolutions.Service", "TsSolutions.Service\TsSolutions.Service.csproj", "{C41816C0-B52B-4A8C-9933-7BD28D033B38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TsSolution.WpfCommon", "TsSolution.WpfCommon\TsSolution.WpfCommon.csproj", "{88668733-850A-4237-A7F2-07722178C6B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TsSolutions.WpfCommon", "TsSolution.WpfCommon\TsSolutions.WpfCommon.csproj", "{88668733-850A-4237-A7F2-07722178C6B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptExecutorPrime", "ScriptExecutorPrime\ScriptExecutorPrime.csproj", "{C0C28713-5932-414E-AFA5-AE1B059D323D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{88668733-850A-4237-A7F2-07722178C6B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88668733-850A-4237-A7F2-07722178C6B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88668733-850A-4237-A7F2-07722178C6B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0C28713-5932-414E-AFA5-AE1B059D323D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0C28713-5932-414E-AFA5-AE1B059D323D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0C28713-5932-414E-AFA5-AE1B059D323D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0C28713-5932-414E-AFA5-AE1B059D323D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

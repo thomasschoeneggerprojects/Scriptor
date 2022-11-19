@@ -1,16 +1,63 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using TsSolutions.Service;
 
 namespace TsSolution.WpfCommon
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
+        #region Initialization View Model
+
+        internal bool IsInitialized => _initDone;
+        protected bool _initDone = false;
+
+        protected ViewModelBase()
+        {
+            InitViewModelBase(5000);
+        }
+
+        protected ViewModelBase(int minLoadingTimeMs)
+        {
+            InitViewModelBase(minLoadingTimeMs);
+        }
+
+        protected void InitViewModel()
+        {
+            InitViewModelBase(5000);
+        }
+
+        private void InitViewModelBase(int minLoadingTimeMs)
+        {
+            _initDone = false;
+
+            var task = Task<bool>.Run(async () =>
+            {
+                OnInitialize();
+                await OnLoadingAfterInitializeAsync();
+
+                _initDone = true;
+
+                return true;
+            });
+        }
+
+        protected abstract System.Threading.Tasks.Task OnLoadingAfterInitializeAsync();
+
+        protected virtual void OnInitialize()
+        {
+            // Default Method to override
+        }
+
+        #endregion Initialization View Model
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
@@ -37,7 +84,7 @@ namespace TsSolution.WpfCommon
 
         public void RunOnUIThread(Action action, [CallerMemberName] string callerName = "")
         {
-            Application.Current.Dispatcher.Invoke(async () =>
+            Application.Current.Dispatcher.Invoke(() =>
             {
                 try
                 {

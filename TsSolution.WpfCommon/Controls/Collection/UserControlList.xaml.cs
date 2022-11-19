@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace TsSolution.WpfCommon.Controls
+namespace TsSolutions.WpfCommon.Controls
 {
     /// <summary>
     /// Interaction logic for UserControlList.xaml

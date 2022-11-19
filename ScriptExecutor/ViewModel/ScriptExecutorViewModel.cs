@@ -1,26 +1,39 @@
 ﻿using ScriptExecutorLib.Model.Execution;
+using ScriptExecutorLib.UserControls;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using TsSolution.WpfCommon;
 using TsSolutions.Service;
 using TsSolutions.Service.PerformanceTest;
+using TsSolutions.WpfCommon.Controls;
 
 namespace ScriptExecutorLib.ViewModel
 {
     internal class ScriptExecutorViewModel : ViewModelBase
     {
         private readonly IExecutionItemManager _executionItemManager;
+        private readonly IExecutionItemProcessor _executionItemProcessor;
 
-        public ScriptExecutorViewModel(IExecutionItemManager executionItemManager)
+        public ScriptExecutorViewModel(IExecutionItemManager executionItemManager,
+            IExecutionItemProcessor executionItemProcessor)
         {
             this._executionItemManager = executionItemManager;
+            this._executionItemProcessor = executionItemProcessor;
+
+            InitViewModel();
         }
 
-        internal void CreateTest()
+        protected override async Task OnLoadingAfterInitializeAsync()
+        {
+            var allItems = await _executionItemManager.GetAll();
+            _FillItemList(allItems);
+        }
+
+        internal void AddNewExecutionItem()
         {
             var items = CreateTestItems();
 
@@ -42,27 +55,7 @@ namespace ScriptExecutorLib.ViewModel
             });
 
             sw.Stop();
-            Console.WriteLine($"{nameof(CreateTest)} : elapsed ms => {sw.ElapsedMilliseconds}");
-        }
-
-        internal void DeleteTest()
-        {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            try
-            {
-                ExecutionHelper.RunSync(async () =>
-                {
-                    await _executionItemManager.DeleteAll();
-                });
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
-            sw.Stop();
-            Console.WriteLine($"{nameof(CreateTest)} : elapsed ms => {sw.ElapsedMilliseconds}");
+            Console.WriteLine($"{nameof(AddNewExecutionItem)} : elapsed ms => {sw.ElapsedMilliseconds}");
         }
 
         private List<ExecutionItem> CreateTestItems()
@@ -77,5 +70,55 @@ namespace ScriptExecutorLib.ViewModel
 
             return testitems;
         }
+
+        #region Execution items list
+
+        private void _FillItemList(List<ExecutionItem> allItems)
+        {
+            List<UserControl> items = new List<UserControl>();
+            RunOnUIThread(() =>
+            {
+                foreach (var item in allItems)
+                {
+                    var cntrl = new ScriptControl(item);
+
+                    items.Add(cntrl);
+                }
+
+                SetItems(items);
+            });
+        }
+
+        private List<UserControl> _executionItems;
+
+        public List<UserControl> ExecutionItems
+        {
+            get
+            {
+                if (_executionItems == null)
+                {
+                    var executionItems = new List<UserControl>();
+                    _executionItems = executionItems;
+                }
+                return _executionItems;
+            }
+            set
+            {
+                _executionItems = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        internal void SetItems(List<UserControl> items)
+        {
+            ExecutionItems = items;
+        }
+
+        internal void DeleteSelectedExecutionItem()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion Execution items list
     }
 }

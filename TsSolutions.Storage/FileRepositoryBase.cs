@@ -26,7 +26,7 @@ namespace TsSolutions.Storage
 
         private bool _isUpdaterInit = false;
 
-        private async Task InitUpdaterFirst()
+        protected async Task InitUpdaterFirst()
         {
             if (_isUpdaterInit)
             {
@@ -298,6 +298,8 @@ namespace TsSolutions.Storage
         public abstract Task Delete(Dto item);
 
         public abstract Task DeleteAll();
+
+        public abstract Task Init();
 
         #endregion CRUD interface
 

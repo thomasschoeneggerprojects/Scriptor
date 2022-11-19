@@ -18,5 +18,7 @@ namespace ScriptExecutorLib.Model.Execution
         Task Delete(ExecutionItem item);
 
         Task DeleteAll();
+
+        Task Init();
     }
 }

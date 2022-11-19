@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TsSolution.WpfCommon\TsSolution.WpfCommon.csproj" />
+    <ProjectReference Include="..\TsSolution.WpfCommon\TsSolutions.WpfCommon.csproj" />
     <ProjectReference Include="..\TsSolutions.Serialization\TsSolutions.Serialization.csproj" />
     <ProjectReference Include="..\TsSolutions.Service\TsSolutions.Service.csproj" />
     <ProjectReference Include="..\TsSolutions.Storage\TsSolutions.Storage.csproj" />

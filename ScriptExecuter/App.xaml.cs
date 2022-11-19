@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ScriptExecuter.View;
+using ScriptExecutorLib.Model;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -13,5 +15,13 @@ namespace ScriptExecuter
     /// </summary>
     public partial class App : Application
     {
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            ScriptExecutorLib.Model.Startup.Init();
+
+            MainWindow wnd = new MainWindow();
+
+            wnd.Show();
+        }
     }
 }

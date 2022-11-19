@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ScriptExecutor\ScriptExecutorLib.csproj" />
+    <ProjectReference Include="..\TsSolution.WpfCommon\TsSolutions.WpfCommon.csproj" />
+  </ItemGroup>
+
+</Project>

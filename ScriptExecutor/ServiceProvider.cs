@@ -54,10 +54,14 @@ namespace ScriptExecutorLib
 
         public static void InitializeDefaultServices()
         {
-            string registeredServices = String.Empty;
+            StringBuilder registeredServices = new StringBuilder("initialize services");
             try
             {
                 Register<IExecutionItemManager>(new DefaultExecutionItemManager());
+                registeredServices.AppendLine($"registered {nameof(IExecutionItemManager)}");
+
+                Register<IExecutionItemProcessor>(new DefaultExecutionItemProcessor());
+                registeredServices.AppendLine($"registered {nameof(IExecutionItemProcessor)}");
             }
             catch (Exception ex)
             {

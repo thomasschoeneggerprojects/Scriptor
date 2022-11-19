@@ -1,3 +1,6 @@
+using ScriptExecutorLib.Model.Execution;
+using ScriptExecutorLib.UserControls;
+using ScriptExecutorLib.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,9 +23,31 @@ namespace ScriptExecutor.View
     /// </summary>
     public partial class ScriptEditor : UserControl
     {
+        private ScriptEditorViewModel VM;
+
         public ScriptEditor()
         {
             InitializeComponent();
+
+            VM = new ScriptEditorViewModel();
+            this.DataContext = VM;
+
+            FillTestItems(10);
+        }
+
+        internal void FillTestItems(int countItems)
+        {
+            List<UserControl> items = new List<UserControl>();
+
+            for (int i = 0; i < countItems; i++)
+            {
+                var item = ExecutionItemFactory.CreateExecutionItemDefault($"test Item Name {i}");
+                var cntrl = new ScriptControl(item);
+
+                items.Add(cntrl);
+            }
+
+            VM.SetItems(items);
         }
     }
 }

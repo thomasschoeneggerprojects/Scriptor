@@ -79,5 +79,10 @@ namespace ScriptExecutorLib.Model.Execution.Repository
             return Path.Combine(GlobalConstants.DefaultExecutionItemEntryFolderPath,
                 FileNameHelper.GetFileName(item));
         }
+
+        public override async Task Init()
+        {
+            await InitUpdaterFirst();
+        }
     }
 }

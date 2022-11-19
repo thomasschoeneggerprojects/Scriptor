@@ -33,13 +33,6 @@ namespace ScriptExecutorLib.Model.Execution
             OnItemsChanged();
         }
 
-        //private Task<bool> OnStorageChanged()
-        //{
-        //    OnItemsChanged();
-
-        //    return Task.FromResult(true);
-        //}
-
         #endregion event handling
 
         public Task<List<ExecutionItemOverview>> GetAllOverviewItems()
@@ -117,6 +110,11 @@ namespace ScriptExecutorLib.Model.Execution
         protected override void OnErrorOccured(ServiceErrorInformation errorInformation)
         {
             // Implement logging
+        }
+
+        public async Task Init()
+        {
+            await _repository.Init().ConfigureAwait(false);
         }
     }
 }
