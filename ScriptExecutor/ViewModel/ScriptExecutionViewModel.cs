@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using TsSolution.WpfCommon;
@@ -13,12 +14,12 @@ using TsSolutions.WpfCommon.Controls;
 
 namespace ScriptExecutorLib.ViewModel
 {
-    internal class ScriptExecutorViewModel : ViewModelBase
+    internal class ScriptExecutionViewModel : ViewModelBase
     {
         private readonly IExecutionItemManager _executionItemManager;
         private readonly IExecutionItemProcessor _executionItemProcessor;
 
-        public ScriptExecutorViewModel(IExecutionItemManager executionItemManager,
+        public ScriptExecutionViewModel(IExecutionItemManager executionItemManager,
             IExecutionItemProcessor executionItemProcessor)
         {
             this._executionItemManager = executionItemManager;
@@ -109,9 +110,54 @@ namespace ScriptExecutorLib.ViewModel
             }
         }
 
+        private UserControl _selectedExecutionItem;
+
+        public UserControl SelectedExecutionItem
+        {
+            get
+            {
+                return _selectedExecutionItem;
+            }
+            set
+            {
+                _selectedExecutionItem = value;
+                SetSelectedItemContent(_selectedExecutionItem);
+                NotifyPropertyChanged();
+            }
+        }
+
+        private void SetSelectedItemContent(UserControl _selectedExecutionItem)
+        {
+            if (_selectedExecutionItem is ScriptControl scriptControl)
+            {
+                ScriptOverView scriptOverView = new ScriptOverView(scriptControl.Item);
+                SelectedScriptOverView = scriptOverView;
+            }
+        }
+
+        private UserControl _selectedScriptOverView;
+
+        public UserControl SelectedScriptOverView
+        {
+            get
+            {
+                return _selectedScriptOverView;
+            }
+            set
+            {
+                _selectedScriptOverView = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         internal void SetItems(List<UserControl> items)
         {
             ExecutionItems = items;
+
+            if (ExecutionItems?.Count > 0)
+            {
+                SelectedExecutionItem = ExecutionItems.ElementAt(0);
+            }
         }
 
         internal void DeleteSelectedExecutionItem()

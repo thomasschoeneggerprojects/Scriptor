@@ -21,12 +21,12 @@ namespace TsSolution.WpfCommon
 
         protected ViewModelBase()
         {
-            InitViewModelBase(5000);
+            //InitViewModelBase(5000);
         }
 
         protected ViewModelBase(int minLoadingTimeMs)
         {
-            InitViewModelBase(minLoadingTimeMs);
+            //InitViewModelBase(minLoadingTimeMs);
         }
 
         protected void InitViewModel()

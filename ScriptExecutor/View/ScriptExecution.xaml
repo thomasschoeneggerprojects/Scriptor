@@ -8,10 +8,11 @@
     xmlns:local="clr-namespace:ScriptExecutorLib.View"
     xmlns:material="clr-namespace:ScriptExecutorLib.Resources.Icons"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:usercontrols="clr-namespace:ScriptExecutorLib.UserControls"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Grid x:Name="gridRoot" Margin="5">
+    <Grid x:Name="gridRoot" Margin="0">
         <Grid x:Name="gridRootPanel">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
@@ -58,7 +59,7 @@
                         Background="Transparent"
                         BorderBrush="Transparent"
                         Click="buttonDeleteExecutionTemplate_Click"
-                        ToolTip="Create new execution template.">
+                        ToolTip="Delete selected execution template.">
                         <StackPanel>
                             <Path
                                 Canvas.Left="25"
@@ -79,7 +80,8 @@
                     VerticalAlignment="Stretch"
                     HorizontalContentAlignment="Stretch"
                     VerticalContentAlignment="Stretch"
-                    ListItems="{Binding ExecutionItems, Mode=TwoWay}" />
+                    ListItems="{Binding ExecutionItems, Mode=TwoWay}"
+                    SelectedItem="{Binding SelectedExecutionItem, Mode=TwoWay}" />
             </Grid>
             <Grid
                 x:Name="gridInfoPanel"
@@ -90,10 +92,7 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <ScrollViewer>
-                    <StackPanel>
-                        <Label x:Name="labelHeader" />
-                        <Label x:Name="labelInformation" />
-                    </StackPanel>
+                    <UserControl Content="{Binding SelectedScriptOverView}" />
                 </ScrollViewer>
             </Grid>
         </Grid>

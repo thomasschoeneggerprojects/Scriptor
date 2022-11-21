@@ -20,6 +20,8 @@ namespace ScriptExecutorLib.Resources.Icons
         public static Geometry DeleteOutline = Geometry.Parse("M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4h-3.5z");
 
         public static Geometry Clear = Geometry.Parse("M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z");
+
+        public static Geometry PlayArrow = Geometry.Parse("M10 8.64L15.27 12 10 15.36V8.64M8 5v14l11-7L8 5z");
         /*
         public static Geometry xxx = Geometry.Parse("");
         public static Geometry xxx = Geometry.Parse("");

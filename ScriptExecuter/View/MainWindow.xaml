@@ -10,8 +10,8 @@
     Title="Scriptor"
     Width="800"
     Height="450"
-    MinWidth="200"
-    MinHeight="200"
+    MinWidth="400"
+    MinHeight="400"
     AllowsTransparency="True"
     ResizeMode="CanResize"
     mc:Ignorable="d">
@@ -23,7 +23,7 @@
             <Setter Property="WindowStyle" Value="None" />
         </Style>
     </Window.Style>
-    <Grid Background="{x:Static color:AppColor.ColorInvertFill}">
+    <Grid Background="{x:Static color:AppColor.ColorFillThird}" MouseDown="gridTitleBar_MouseDown">
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
             <RowDefinition Height="*" />
@@ -41,7 +41,7 @@
                     FontFamily="Cascadia Code"
                     FontSize="14"
                     FontWeight="Bold"
-                    Foreground="{x:Static color:AppColor.ColorText}">
+                    Foreground="{x:Static color:AppColor.ColorInvertText}">
                     Scriptor
                 </Label>
             </StackPanel>
@@ -64,7 +64,7 @@
                             Width="15"
                             Height="15"
                             Data="{x:Static material:Material.Clear}"
-                            Fill="{x:Static color:AppColor.ColorText}"
+                            Fill="{x:Static color:AppColor.ColorInvertText}"
                             Stretch="Fill" />
                     </StackPanel>
                 </Button>

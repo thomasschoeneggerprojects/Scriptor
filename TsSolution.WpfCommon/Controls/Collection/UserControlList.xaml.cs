@@ -61,7 +61,7 @@ namespace TsSolutions.WpfCommon.Controls
 
         public static readonly DependencyProperty SetSelectedItemProperty =
            DependencyProperty.Register("SelectedItem", typeof(UserControl), typeof(UserControlList), new
-              PropertyMetadata(null));
+              PropertyMetadata(new PropertyChangedCallback(OnSelectedItemChanged)));
 
         public UserControl SelectedItem
         {
@@ -75,19 +75,35 @@ namespace TsSolutions.WpfCommon.Controls
             }
         }
 
+        private static void OnSelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is UserControlList controlList)
+            {
+                if (e.NewValue is UserControl userControl)
+                {
+                    controlList.SetSelectedItem(userControl, controlList.lstBox);
+                }
+            }
+        }
+
         private void OnSelectedItemChanged(object sender, SelectionChangedEventArgs e)
         {
             var listBox = sender as ListBox;
 
-            if (e.AddedItems.Count > 0)
-            {
-                if (e.AddedItems[0] is UserControl pfVar)
-                {
-                    SelectedItem = pfVar;
-                }
-            }
+            if (e.AddedItems.Count <= 0)
+                return;
 
-            if (SelectedItem != null)
+            if (e.AddedItems[0] is UserControl userControl)
+            {
+                SetSelectedItem(userControl, listBox);
+            }
+        }
+
+        private void SetSelectedItem(UserControl userControl, ListBox listBox)
+        {
+            SelectedItem = userControl;
+
+            if (SelectedItem != null && listBox != null)
             {
                 listBox.SelectedItem = SelectedItem;
             }

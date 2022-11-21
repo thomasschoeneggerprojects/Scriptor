@@ -28,12 +28,12 @@ namespace ScriptExecutorLib.View
     {
         private Process _CurrentRunningProcess;
 
-        private ScriptExecutorViewModel VM;
+        private ScriptExecutionViewModel VM;
 
         public ScriptExecution()
         {
             InitializeComponent();
-            VM = new ScriptExecutorViewModel(ServiceProvider.Get<IExecutionItemManager>(),
+            VM = new ScriptExecutionViewModel(ServiceProvider.Get<IExecutionItemManager>(),
                 ServiceProvider.Get<IExecutionItemProcessor>());
             this.DataContext = VM;
         }

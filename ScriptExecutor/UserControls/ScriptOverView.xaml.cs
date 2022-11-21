@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -18,18 +17,24 @@ using System.Windows.Shapes;
 namespace ScriptExecutorLib.UserControls
 {
     /// <summary>
-    /// Interaction logic for ScriptControl.xaml
+    /// Interaction logic for ScriptOverView.xaml
     /// </summary>
-    public partial class ScriptControl : UserControl
+    public partial class ScriptOverView : UserControl
     {
-        internal ExecutionItem Item { get; }
+        private ScriptOverViewModel VM;
 
-        public ScriptControl(ExecutionItem executionItem)
+        public ScriptOverView(ExecutionItem executionItem)
         {
-            Item = executionItem;
             InitializeComponent();
-            lblName.Content = executionItem.Name;
-            lblDescription.Content = executionItem.Description;
+            VM = new ScriptOverViewModel(ServiceProvider.Get<IExecutionItemProcessor>());
+            this.DataContext = VM;
+
+            VM.SetItem(executionItem);
+        }
+
+        private void buttonExecuteScript_Click(object sender, RoutedEventArgs e)
+        {
+            VM.ExecuteScript();
         }
     }
 }
