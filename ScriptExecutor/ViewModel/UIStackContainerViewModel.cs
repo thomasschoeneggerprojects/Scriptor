@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using TsSolution.WpfCommon;
 
-namespace ScriptExecutor.ViewModel
+namespace ScriptExecutorLib.ViewModel
 {
-    internal class MainWindowViewModel : ViewModelBase
+    internal class UIStackContainerViewModel : ViewModelBase
     {
         private UserControl _content;
 
@@ -50,17 +50,6 @@ namespace ScriptExecutor.ViewModel
             }
 
             Content = new ScriptExecution();
-        }
-
-        internal void LoadScriptExecutorLib()
-        {
-            if (Content is UIStackContainerView)
-            {
-                return;
-            }
-
-            Content = new UIStackContainerView();
-
         }
     }
 }
