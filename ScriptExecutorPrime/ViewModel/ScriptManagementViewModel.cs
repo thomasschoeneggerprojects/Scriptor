@@ -2,11 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TsSolution.WpfCommon;
-using TsSolutions.Service.PerformanceTest;
 using TsSolutions.Service;
 
 namespace ScriptExecutorPrime.ViewModel
@@ -24,6 +21,18 @@ namespace ScriptExecutorPrime.ViewModel
         {
         }
 
+        public string _countTestScripts = "5";
+
+        public String CountTestScripts
+        {
+            get { return _countTestScripts; }
+            set
+            {
+                _countTestScripts = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         internal void CreateTestScripts()
         {
             CreateTest();
@@ -31,7 +40,8 @@ namespace ScriptExecutorPrime.ViewModel
 
         internal void CreateTest()
         {
-            var items = CreateTestItems();
+            var numberItems = int.Parse(CountTestScripts);
+            var items = CreateTestItems(numberItems);
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -40,7 +50,7 @@ namespace ScriptExecutorPrime.ViewModel
             {
                 foreach (var item in items)
                 {
-                    await _executionItemManager.Update(item);
+                    await _executionItemManager.Add(item);
                 }
             });
 
@@ -52,17 +62,22 @@ namespace ScriptExecutorPrime.ViewModel
         {
         }
 
-        private List<ExecutionItem> CreateTestItems()
+        private List<ExecutionItem> CreateTestItems(int numberItems)
         {
             List<ExecutionItem> testitems = new List<ExecutionItem>();
 
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < numberItems; i++)
             {
                 var item = ExecutionItemFactory.CreateExecutionItemDefault($"test{i}");
                 testitems.Add(item);
             }
 
             return testitems;
+        }
+
+        internal async Task DeleteAllTestScripts()
+        {
+            await _executionItemManager.DeleteAll();
         }
     }
 }

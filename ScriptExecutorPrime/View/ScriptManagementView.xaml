@@ -26,7 +26,7 @@
                 x:Name="buttonCreateTestScripts"
                 Margin="1"
                 Click="buttonCreateTestScripts_Click">
-                Create TestScritps
+                Create Test Scritps
             </Button>
             <TextBox
                 x:Name="txtBoxCountTestScripts"
@@ -35,6 +35,14 @@
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
                 Text="{Binding CountTestScripts}" />
+
+            <Button
+                x:Name="buttonDeleteAllTestScripts"
+                Grid.Row="1"
+                Margin="1"
+                Click="buttonDeleteAllTestScripts_Click">
+                Delete All Test Scritps
+            </Button>
         </Grid>
     </Grid>
 </UserControl>

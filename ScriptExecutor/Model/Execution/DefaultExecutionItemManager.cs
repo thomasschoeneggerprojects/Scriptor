@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TsSolutions.Service;
+using TsSolutions.Storage;
 using TsSolutions.Storage.FileStorage;
 
 namespace ScriptExecutorLib.Model.Execution
@@ -12,6 +13,8 @@ namespace ScriptExecutorLib.Model.Execution
     internal class DefaultExecutionItemManager : SimpleThreadServiceAsync, IExecutionItemManager
     {
         private ExecutionItemRepository _repository;
+
+        public int MaxCapacity => 300;
 
         public DefaultExecutionItemManager()
         {
@@ -21,16 +24,39 @@ namespace ScriptExecutorLib.Model.Execution
 
         #region event handling
 
-        public event EventHandler ItemsChanged;
+        public event EventHandler<ExecutionItemId> ItemAdded;
 
-        private void OnItemsChanged()
-        {
-            ItemsChanged?.Invoke(this, EventArgs.Empty);
-        }
+        public event EventHandler<ExecutionItemId> ItemUpdated;
 
-        private void OnStorageChanged(object? sender, EventArgs e)
+        public event EventHandler<ExecutionItemId> ItemDeleted;
+
+        public event EventHandler<ExecutionItemId> ItemChanged;
+
+        private void OnStorageChanged(object? sender, StorageChangedInfo storageChangedInfo)
         {
-            OnItemsChanged();
+            ExecutionItemId id = new ExecutionItemId(storageChangedInfo.ItemId);
+
+            switch (storageChangedInfo.ChangeAction)
+            {
+                case StorageChangeAction.Unknown:
+                    ItemChanged?.Invoke(this, id);
+                    break;
+
+                case StorageChangeAction.Added:
+                    ItemAdded?.Invoke(this, id);
+                    break;
+
+                case StorageChangeAction.Updated:
+                    ItemUpdated?.Invoke(this, id);
+                    break;
+
+                case StorageChangeAction.Deleted:
+                    ItemDeleted?.Invoke(this, id);
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         #endregion event handling
@@ -72,21 +98,37 @@ namespace ScriptExecutorLib.Model.Execution
             return _repository.AllItems.Any(tmp => tmp.Id.Equals(id));
         }
 
+        public async Task Add(ExecutionItem item)
+        {
+            if (_repository.AllItems.Count >= MaxCapacity)
+                throw new ArgumentException($"Not allowed to {nameof(Add)} item." +
+                    $"Max Value {nameof(MaxCapacity)} = {MaxCapacity} reached.");
+
+            // TODO !!! CONSIDER Event in Lock Mechanism
+            //await LockAsync(async () =>
+            //{
+            string filePath = _repository.CreateFilePath(item);
+
+            await _repository.Add(item, filePath);
+            //});
+        }
+
         public async Task Update(ExecutionItem item)
         {
             // TODO !!! CONSIDER Event in Lock Mechanism
-            await LockAsync(async () =>
+            //await LockAsync(async () =>
+            //{
+            string filePath = _repository.CreateFilePath(item);
+            if (_repository.AllItems.Any(tmp => tmp.Id.Equals(item.Id)))
             {
-                string filePath = _repository.CreateFilePath(item);
-                if (_repository.AllItems.Any(tmp => tmp.Id.Equals(item.Id)))
-                {
-                    await _repository.Save(item, filePath);
+                await _repository.Update(item, filePath);
 
-                    return;
-                }
+                return;
+            }
 
-                await _repository.Save(item, filePath);
-            });
+            throw new ArgumentException($"Item with id = {item.Id} does not exist in store. " +
+                $"Please add it with {nameof(Add)} before.");
+            //});
         }
 
         public async Task Delete(ExecutionItem item)
@@ -96,6 +138,7 @@ namespace ScriptExecutorLib.Model.Execution
             //{
             await _repository.Delete(item);
             //});
+            //OnItemsChanged();
         }
 
         public async Task DeleteAll()

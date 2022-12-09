@@ -1,4 +1,5 @@
-﻿using ScriptExecutorPrime.View;
+﻿using ScriptExecutorLib.Model.Execution;
+using ScriptExecutorPrime.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,10 @@ namespace ScriptExecutorPrime
 {
     internal class MainWindowModel : ViewModelBase
     {
+        public MainWindowModel()
+        {
+        }
+
         protected override async Task OnLoadingAfterInitializeAsync()
         {
         }

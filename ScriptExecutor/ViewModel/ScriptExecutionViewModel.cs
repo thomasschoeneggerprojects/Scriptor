@@ -30,8 +30,22 @@ namespace ScriptExecutorLib.ViewModel
 
         protected override async Task OnLoadingAfterInitializeAsync()
         {
+            _executionItemManager.ItemChanged += ItemsInStorageChanged;
+            _executionItemManager.ItemDeleted += ItemsInStorageChanged;
+            _executionItemManager.ItemAdded += ItemsInStorageChanged;
+            _executionItemManager.ItemUpdated += ItemsInStorageChanged;
+
             var allItems = await _executionItemManager.GetAll();
             _FillItemList(allItems);
+        }
+
+        private void ItemsInStorageChanged(object? sender, ExecutionItemId executionItemId)
+        {
+            Task.Run(async () =>
+            {
+                var allItems = await _executionItemManager.GetAll();
+                _FillItemList(allItems);
+            });
         }
 
         internal void AddNewExecutionItem()
@@ -63,7 +77,7 @@ namespace ScriptExecutorLib.ViewModel
         {
             List<ExecutionItem> testitems = new List<ExecutionItem>();
 
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 1; i++)
             {
                 var item = ExecutionItemFactory.CreateExecutionItemDefault($"test{i}");
                 testitems.Add(item);
@@ -77,18 +91,21 @@ namespace ScriptExecutorLib.ViewModel
         private void _FillItemList(List<ExecutionItem> allItems)
         {
             List<UserControl> items = new List<UserControl>();
-            RunOnUIThread(() =>
+
+            foreach (var item in allItems)
             {
-                foreach (var item in allItems)
+                RunOnUIThread(() =>
                 {
                     var cntrl = new ScriptControl(item);
 
                     items.Add(cntrl);
-                }
+                });
+            }
 
-                SetItems(items);
-            });
+            SetItems(items);
         }
+
+        private Dictionary<ExecutionItemId, ExecutionItem> _executionItemCache;
 
         private List<UserControl> _executionItems;
 
@@ -152,17 +169,23 @@ namespace ScriptExecutorLib.ViewModel
 
         internal void SetItems(List<UserControl> items)
         {
-            ExecutionItems = items;
-
-            if (ExecutionItems?.Count > 0)
+            RunOnUIThread(() =>
             {
-                SelectedExecutionItem = ExecutionItems.ElementAt(0);
-            }
+                ExecutionItems = items;
+
+                if (ExecutionItems?.Count > 0)
+                {
+                    SelectedExecutionItem = ExecutionItems.ElementAt(0);
+                }
+            });
         }
 
-        internal void DeleteSelectedExecutionItem()
+        internal async Task DeleteSelectedExecutionItem()
         {
-            throw new NotImplementedException();
+            var selectedItem = (ScriptControl)SelectedExecutionItem;
+            await _executionItemManager.Delete(selectedItem.Item);
+
+            //SetItems(ExecutionItems);
         }
 
         #endregion Execution items list

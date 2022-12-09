@@ -6,7 +6,7 @@ using TsSolutions.Storage.FileStorage;
 
 namespace TsSolutions.Storage
 {
-    public abstract class RepositoryBase<T, Dto>
+    public abstract class FileRepositoryBase<T, Dto>
     {
         public List<ItemOverviewInfo> OverviewItems { get; protected set; } = new List<ItemOverviewInfo>();
 
@@ -18,7 +18,7 @@ namespace TsSolutions.Storage
 
         private object lockSync = new object();
 
-        protected RepositoryBase()
+        protected FileRepositoryBase()
         {
         }
 
@@ -36,13 +36,15 @@ namespace TsSolutions.Storage
             Updater = new ItemUpdater<bool>();
             FolderPaths = await GetFolderPaths();
 
-            Updater.ContentChange += async (uInf) => { await ContentFolderChanged(uInf); };
             Updater.Init(FolderPaths, () =>
             {
                 return LoadUpdateItems();
             });
 
             _isUpdaterInit = true;
+
+            Updater.ContentChange += async (uInf) => { await ContentFolderChangedByOtherApplication(uInf); };
+            Updater.StartExecution();
         }
 
         private Dictionary<Guid, DateTimeOffset> LoadUpdateItems()
@@ -65,17 +67,19 @@ namespace TsSolutions.Storage
                         updatedItems.Add(guid, DateTimeOffset.Now);
                     }
                 }
+                AllItems = new List<Dto>(AllItemsDictionary.Values);
+                CreateOverviewItems(AllItems);
             }
             return updatedItems;
         }
 
         #endregion Init Updater
 
-        private async Task ContentFolderChanged(ItemUpdateInfoDto updateInfo)
+        private async Task ContentFolderChangedByOtherApplication(ItemUpdateInfoDto updateInfo)
         {
             try
             {
-                await ReloadItemsFromRepository();
+                await ReloadItemsFromRepository(StorageChangedInfo.Create(StorageChangeAction.Unknown, Guid.Empty));
             }
             catch (Exception ex)
             {
@@ -98,7 +102,18 @@ namespace TsSolutions.Storage
             return dto;
         }
 
-        public async Task SaveItem(Dto item, Guid itemId, string filePath)
+        public async Task AddItem(Dto item, Guid itemId, string filePath)
+        {
+            await InitUpdaterFirst().ConfigureAwait(false);
+            JsonStorageHandler.Store<T>(Map(item), filePath);
+
+            SetItemInDictionary(itemId, item);
+
+            var folderPath = Path.GetDirectoryName(filePath);
+            await HandleUpdateInStorage(itemId, folderPath);
+        }
+
+        public async Task UpdateItem(Dto item, Guid itemId, string filePath)
         {
             await InitUpdaterFirst().ConfigureAwait(false);
             JsonStorageHandler.Store<T>(Map(item), filePath);
@@ -128,7 +143,7 @@ namespace TsSolutions.Storage
 
                 File.Delete(filePath);
             }
-            ClearDictionary();
+            ClearAllItams();
 
             await HandleDeleteAllInStorage(folderPath);
         }
@@ -138,7 +153,7 @@ namespace TsSolutions.Storage
             await InitUpdaterFirst().ConfigureAwait(false);
 
             Updater.RefereshAfterDeleteAll(folderPath);
-            await ReloadItemsFromRepository();
+            await ReloadItemsFromRepository(StorageChangedInfo.Create(StorageChangeAction.Unknown, Guid.Empty));
         }
 
         public async Task HandleDeleteInStorage(Guid itemId, string folderPath)
@@ -146,7 +161,7 @@ namespace TsSolutions.Storage
             await InitUpdaterFirst().ConfigureAwait(false);
 
             Updater.RefereshAfterDelete(folderPath, itemId);
-            await ReloadItemsFromRepository();
+            await ReloadItemsFromRepository(StorageChangedInfo.Create(StorageChangeAction.Deleted, itemId));
         }
 
         public async Task HandleUpdateInStorage(Guid itemId, string folderPath)
@@ -154,24 +169,27 @@ namespace TsSolutions.Storage
             await InitUpdaterFirst().ConfigureAwait(false);
 
             Updater.RefereshAfterUpdate(folderPath, itemId);
-            await ReloadItemsFromRepository();
+            await ReloadItemsFromRepository(StorageChangedInfo.Create(StorageChangeAction.Updated, itemId));
         }
 
-        public async Task RefreshFromStorage()
+        public async Task HandleAddInStorage(Guid itemId, string folderPath)
         {
-            await ReloadItemsFromRepository();
+            await InitUpdaterFirst().ConfigureAwait(false);
+
+            Updater.RefereshAfterUpdate(folderPath, itemId);
+            await ReloadItemsFromRepository(StorageChangedInfo.Create(StorageChangeAction.Added, itemId));
         }
 
         #region Update
 
-        private void RaiseStorageHasChanged()
+        private void RaiseStorageHasChanged(StorageChangedInfo info)
         {
-            StorageChanged?.Invoke(this, EventArgs.Empty);
+            StorageChanged?.Invoke(this, info);
         }
 
-        public event EventHandler StorageChanged;
+        public event EventHandler<StorageChangedInfo> StorageChanged;
 
-        private async Task ReloadItemsFromRepository()
+        private async Task ReloadItemsFromRepository(StorageChangedInfo storageChangedInfo)
         {
             await InitUpdaterFirst().ConfigureAwait(false);
 
@@ -201,16 +219,29 @@ namespace TsSolutions.Storage
                             }
                         }
 
+                        CleanupDeletedItems(Updater.LastReadedUpdateInfo);
+
                         AllItems = new List<Dto>(AllItemsDictionary.Values);
                         CreateOverviewItems(AllItems);
                     }
                 }
 
-                RaiseStorageHasChanged();
+                RaiseStorageHasChanged(storageChangedInfo);
             }
             catch (Exception ex)
             {
                 // Provide logging interface
+            }
+        }
+
+        private void CleanupDeletedItems(ItemUpdateInfoDto lastReadedUpdateInfo)
+        {
+            foreach (var existingItem in AllItemsDictionary.Keys)
+            {
+                if (!lastReadedUpdateInfo.UpdatedItems.ContainsKey(existingItem))
+                {
+                    AllItemsDictionary.Remove(existingItem);
+                }
             }
         }
 
@@ -234,9 +265,10 @@ namespace TsSolutions.Storage
             }
         }
 
-        private void ClearDictionary()
+        private void ClearAllItams()
         {
             AllItemsDictionary.Clear();
+            AllItems.Clear();
         }
 
         private static List<string> GetAllRelevantFilenames(List<string> folderPaths)
@@ -287,7 +319,9 @@ namespace TsSolutions.Storage
 
         public abstract Task<Dto> Load(string filePath);
 
-        public abstract Task Save(Dto item, string filePath);
+        public abstract Task Update(Dto item, string filePath);
+
+        public abstract Task Add(Dto item, string filePath);
 
         public abstract void CreateOverviewItems(List<Dto> items);
 

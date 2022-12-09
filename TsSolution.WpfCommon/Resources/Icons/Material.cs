@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ScriptExecutorLib.Resources.Icons
+namespace TsSolution.WpfCommon.Resources.Icons
 {
     /// <summary>
     /// Icons from => https://fonts.google.com/icons?icon.set=Material+Icons&icon.query=script&icon.platform=web

@@ -1,4 +1,5 @@
-﻿using ScriptExecutorLib.Model.Execution;
+﻿using ScriptExecutorLib;
+using ScriptExecutorLib.Model.Execution;
 using ScriptExecutorPrime.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -22,21 +23,26 @@ namespace ScriptExecutorPrime.View
     /// </summary>
     public partial class ScriptManagementView : UserControl
     {
+        private readonly IExecutionItemManager _executionItemManager;
         private ScriptManagementViewModel VM;
 
         public ScriptManagementView()
         {
             InitializeComponent();
 
-            IExecutionItemManager manager = new DefaultExecutionItemManager();
-
-            VM = new ScriptManagementViewModel(manager);
+            this._executionItemManager = ServiceProvider.Get<IExecutionItemManager>();
+            VM = new ScriptManagementViewModel(_executionItemManager);
             this.DataContext = VM;
         }
 
         private void buttonCreateTestScripts_Click(object sender, RoutedEventArgs e)
         {
             VM.CreateTestScripts();
+        }
+
+        private void buttonDeleteAllTestScripts_Click(object sender, RoutedEventArgs e)
+        {
+            VM.DeleteAllTestScripts();
         }
     }
 }

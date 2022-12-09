@@ -4,11 +4,16 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Runtime.CompilerServices;
+using static System.Net.Mime.MediaTypeNames;
+using System.Timers;
 
 namespace TsSolutions.Storage.FileStorage
 {
     public class ItemUpdater<T>
     {
+        private System.Timers.Timer countDown = new System.Timers.Timer(1700);
+
         private readonly object _lock = new object();
 
         private const string UpdateFileName = "updateInfo.pfupd";
@@ -25,7 +30,9 @@ namespace TsSolutions.Storage.FileStorage
         public ItemUpdater()
         {
             DelayMs = 5000;
+            countDown = new System.Timers.Timer(DelayMs);
             this._cts = new CancellationTokenSource();
+            countDown.Elapsed += CountDown_Elapsed;
             FolderPaths = new List<string>();
         }
 
@@ -58,10 +65,8 @@ namespace TsSolutions.Storage.FileStorage
                 CreateNewUpdateInfoIfNotExists(folderPath);
                 LastReadedUpdateInfo = LoadUpdateInfo(folderPath);
             }
-
+            ReloadUpdateItems.Invoke();
             _isUpdaterInit = true;
-
-            this.StartExecution();
         }
 
         private void CreateNewUpdateInfoIfNotExists(string folderPath)
@@ -76,19 +81,6 @@ namespace TsSolutions.Storage.FileStorage
                 this.LastReadedUpdateInfo.UpdatedItems = ReloadUpdateItems.Invoke();
                 ContentChange(LastReadedUpdateInfo);
             }
-        }
-
-        private static List<string> GetAllRelevantFilenames(string folderPath)
-        {
-            List<string> fileNames = new List<string>();
-
-            if (!Directory.Exists(folderPath))
-            {
-                Directory.CreateDirectory(folderPath);
-            }
-            fileNames.AddRange(Directory.GetFiles(folderPath));
-
-            return fileNames;
         }
 
         internal void InitNewUpdateInfo(string folderPath)
@@ -112,7 +104,7 @@ namespace TsSolutions.Storage.FileStorage
 
             CancelExecution();
             _cts = new CancellationTokenSource();
-            Task.Factory.StartNew(this.PollUpdateInfo, this._cts.Token);
+            this.PollUpdateInfo(this._cts.Token);
         }
 
         public void CancelExecution()
@@ -128,25 +120,33 @@ namespace TsSolutions.Storage.FileStorage
         /// <param name="taskState">
         /// The cancellation token from our _cts field, passed in the StartNew call
         /// </param>
-        private async Task PollUpdateInfo(object cancellationToken)
+        private void PollUpdateInfo(object cancellationToken)
         {
             var token = (CancellationToken)cancellationToken;
 
-            while (!token.IsCancellationRequested)
+            if (token.IsCancellationRequested)
+                return;
+
+            foreach (var folderPath in FolderPaths)
             {
-                foreach (var folderPath in FolderPaths)
+                if (!string.IsNullOrEmpty(folderPath))
                 {
-                    if (!string.IsNullOrEmpty(folderPath))
+                    if (Directory.Exists(folderPath))
                     {
-                        if (Directory.Exists(folderPath))
-                        {
-                            HandleUpdateInfo(folderPath);
-                        }
+                        HandleUpdateInfo(folderPath);
                     }
                 }
-                _lastPollingExecution = DateTimeOffset.Now;
-                await Task.Delay(DelayMs, token);
             }
+            _lastPollingExecution = DateTimeOffset.Now;
+            countDown.Stop();
+            countDown.Start();
+        }
+
+        private void CountDown_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            countDown.Stop();
+
+            this.PollUpdateInfo(_cts.Token);
         }
 
         private bool IsPollingServiceAlive()
@@ -172,7 +172,6 @@ namespace TsSolutions.Storage.FileStorage
 
             LastReadedUpdateInfo = LoadUpdateInfo(folderPath);
 
-            // Check if Storage was changed outside of this running Visual studio instance
             if (!LastReadedUpdateInfo.RunningInstanceId.Equals(InstanceInformation.RunningInstanceId) &&
                 LastReadedUpdateInfo.LastModifiedDate.CompareTo(_lastUpdateDate) > 0)
             {
@@ -187,82 +186,70 @@ namespace TsSolutions.Storage.FileStorage
         {
             VerifyThatUpdaterIsInit();
 
-            if (IsPollingServiceAlive())
+            if (!IsPollingServiceAlive())
             {
-                CreateNewUpdateInfoIfNotExists(folderPath);
+                StartExecution();
+                return;
+            }
+            LastReadedUpdateInfo = GetCurrentUpdateInformation(folderPath);
 
-                LastReadedUpdateInfo = LoadUpdateInfo(folderPath);
-                LastReadedUpdateInfo.LastModifiedDate = DateTimeOffset.UtcNow;
-                LastReadedUpdateInfo.RunningInstanceId = InstanceInformation.RunningInstanceId;
-                LastReadedUpdateInfo.IsUpdatedFromThisInstance = true;
-
-                if (LastReadedUpdateInfo.UpdatedItems.ContainsKey(idUpdatedItem))
-                {
-                    LastReadedUpdateInfo.UpdatedItems[idUpdatedItem] = DateTimeOffset.UtcNow;
-                }
-                else
-                {
-                    LastReadedUpdateInfo.UpdatedItems.Add(idUpdatedItem, DateTimeOffset.UtcNow);
-                }
-
-                SaveUpdateInfo(folderPath, LastReadedUpdateInfo);
-                _lastUpdateDate = LastReadedUpdateInfo.LastModifiedDate;
+            if (LastReadedUpdateInfo.UpdatedItems.ContainsKey(idUpdatedItem))
+            {
+                LastReadedUpdateInfo.UpdatedItems[idUpdatedItem] = DateTimeOffset.UtcNow;
             }
             else
             {
-                StartExecution();
+                LastReadedUpdateInfo.UpdatedItems.Add(idUpdatedItem, DateTimeOffset.UtcNow);
             }
+
+            SaveUpdateInfo(folderPath, LastReadedUpdateInfo);
+            _lastUpdateDate = LastReadedUpdateInfo.LastModifiedDate;
         }
 
         internal void RefereshAfterDelete(string folderPath, Guid idDeletedItem)
         {
             VerifyThatUpdaterIsInit();
 
-            if (IsPollingServiceAlive())
-            {
-                CreateNewUpdateInfoIfNotExists(folderPath);
-
-                LastReadedUpdateInfo = LoadUpdateInfo(folderPath);
-                LastReadedUpdateInfo.LastModifiedDate = DateTimeOffset.UtcNow;
-                LastReadedUpdateInfo.RunningInstanceId = InstanceInformation.RunningInstanceId;
-                LastReadedUpdateInfo.IsUpdatedFromThisInstance = true;
-
-                if (LastReadedUpdateInfo.UpdatedItems.ContainsKey(idDeletedItem))
-                {
-                    LastReadedUpdateInfo.UpdatedItems.Remove(idDeletedItem);
-                }
-
-                SaveUpdateInfo(folderPath, LastReadedUpdateInfo);
-                _lastUpdateDate = LastReadedUpdateInfo.LastModifiedDate;
-            }
-            else
+            if (!IsPollingServiceAlive())
             {
                 StartExecution();
+                return;
             }
+
+            LastReadedUpdateInfo = GetCurrentUpdateInformation(folderPath);
+
+            if (LastReadedUpdateInfo.UpdatedItems.ContainsKey(idDeletedItem))
+            {
+                LastReadedUpdateInfo.UpdatedItems.Remove(idDeletedItem);
+            }
+
+            SaveUpdateInfo(folderPath, LastReadedUpdateInfo);
+            _lastUpdateDate = LastReadedUpdateInfo.LastModifiedDate;
         }
 
         internal void RefereshAfterDeleteAll(string folderPath)
         {
             VerifyThatUpdaterIsInit();
 
-            if (IsPollingServiceAlive())
-            {
-                CreateNewUpdateInfoIfNotExists(folderPath);
-
-                LastReadedUpdateInfo = LoadUpdateInfo(folderPath);
-                LastReadedUpdateInfo.LastModifiedDate = DateTimeOffset.UtcNow;
-                LastReadedUpdateInfo.RunningInstanceId = InstanceInformation.RunningInstanceId;
-                LastReadedUpdateInfo.IsUpdatedFromThisInstance = true;
-
-                LastReadedUpdateInfo.UpdatedItems.Clear();
-
-                SaveUpdateInfo(folderPath, LastReadedUpdateInfo);
-                _lastUpdateDate = LastReadedUpdateInfo.LastModifiedDate;
-            }
-            else
+            if (!IsPollingServiceAlive())
             {
                 StartExecution();
+                return;
             }
+            LastReadedUpdateInfo = GetCurrentUpdateInformation(folderPath);
+
+            LastReadedUpdateInfo.UpdatedItems.Clear();
+
+            SaveUpdateInfo(folderPath, LastReadedUpdateInfo);
+            _lastUpdateDate = LastReadedUpdateInfo.LastModifiedDate;
+        }
+
+        private ItemUpdateInfoDto GetCurrentUpdateInformation(string folderPath)
+        {
+            CreateNewUpdateInfoIfNotExists(folderPath);
+            var info = LoadUpdateInfo(folderPath);
+            
+            return info;
         }
 
         #region LOAD SAVE ITEMS
@@ -270,6 +257,8 @@ namespace TsSolutions.Storage.FileStorage
         private static bool SaveUpdateInfo(string folderPath, ItemUpdateInfoDto dto)
         {
             var expectedFilePath = Path.Combine(folderPath, UpdateFileName);
+            dto.RunningInstanceId = InstanceInformation.RunningInstanceId;
+            dto.LastModifiedDate = DateTimeOffset.Now;
             JsonStorageHandler.Store(Map(dto), expectedFilePath);
 
             return true;

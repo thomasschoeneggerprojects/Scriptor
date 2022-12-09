@@ -1,4 +1,6 @@
-﻿using ScriptExecutorPrime.View;
+﻿using ScriptExecutorLib.Model.Execution;
+using ScriptExecutorLib;
+using ScriptExecutorPrime.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;

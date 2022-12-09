@@ -5,6 +5,7 @@
     xmlns:color="clr-namespace:ScriptExecutorLib.Resources.Style"
     xmlns:controls="clr-namespace:TsSolutions.WpfCommon.Controls;assembly=TsSolutions.WpfCommon"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:input="clr-namespace:TsSolutions.WpfCommon.Controls.Input;assembly=TsSolutions.WpfCommon"
     xmlns:local="clr-namespace:ScriptExecutorLib.View"
     xmlns:material="clr-namespace:ScriptExecutorLib.Resources.Icons"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -34,9 +35,19 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="30" />
+                        <ColumnDefinition Width="30" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
                     <Button
                         x:Name="buttonAddExecutionTemplate"
+                        Grid.Column="0"
                         Width="35"
                         Background="Transparent"
                         BorderBrush="Transparent"
@@ -55,6 +66,7 @@
                     </Button>
                     <Button
                         x:Name="buttonDeleteExecutionTemplate"
+                        Grid.Column="1"
                         Width="35"
                         Background="Transparent"
                         BorderBrush="Transparent"
@@ -71,7 +83,18 @@
                                 Stretch="Fill" />
                         </StackPanel>
                     </Button>
-                </StackPanel>
+                    <Border
+                        Grid.Column="2"
+                        Margin="1"
+                        BorderBrush="{x:Static color:AppColor.ColorText}"
+                        BorderThickness="1"
+                        CornerRadius="3">
+                        <input:SearchInputBox
+                            Margin="3,0,3,0"
+                            HorizontalAlignment="Stretch"
+                            Background="Transparent" />
+                    </Border>
+                </Grid>
 
                 <controls:UserControlList
                     x:Name="variablesInput"

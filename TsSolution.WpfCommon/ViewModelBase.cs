@@ -98,5 +98,24 @@ namespace TsSolution.WpfCommon
         }
 
         #endregion UI thread execution
+
+        #region States
+
+        private bool _isWorking = false;
+
+        public bool IsWorking
+        {
+            get
+            {
+                return _isWorking;
+            }
+            protected set
+            {
+                _isWorking = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        #endregion States
     }
 }

@@ -17,11 +17,15 @@ namespace ScriptExecuter
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            ScriptExecutorLib.Model.Startup.Init();
+            ScriptExecutorLib.Model.Startup.Init().ContinueWith((t) =>
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    MainWindow wnd = new MainWindow();
 
-            MainWindow wnd = new MainWindow();
-
-            wnd.Show();
+                    wnd.Show();
+                });
+            });
         }
     }
 }

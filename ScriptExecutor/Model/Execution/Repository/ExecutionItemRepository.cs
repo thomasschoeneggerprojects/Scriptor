@@ -2,15 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TsSolutions.Storage;
 using TsSolutions.Storage.FileStorage;
 
 namespace ScriptExecutorLib.Model.Execution.Repository
 {
-    internal class ExecutionItemRepository : RepositoryBase<ExecutionItem1x0, ExecutionItem>
+    internal class ExecutionItemRepository : FileRepositoryBase<ExecutionItem1x0, ExecutionItem>
     {
         public ExecutionItemRepository()
         {
@@ -67,11 +65,18 @@ namespace ScriptExecutorLib.Model.Execution.Repository
             return ExecutionItemMapper.Map(dto);
         }
 
-        public override async Task Save(ExecutionItem item, string filePath)
+        public override async Task Add(ExecutionItem item, string filePath)
         {
             item.LastModifiedDate = DateTimeOffset.UtcNow;
 
-            await SaveItem(item, item.Id.Guid, filePath);
+            await AddItem(item, item.Id.Guid, filePath);
+        }
+
+        public override async Task Update(ExecutionItem item, string filePath)
+        {
+            item.LastModifiedDate = DateTimeOffset.UtcNow;
+
+            await UpdateItem(item, item.Id.Guid, filePath);
         }
 
         public override string CreateFilePath(ExecutionItem item)

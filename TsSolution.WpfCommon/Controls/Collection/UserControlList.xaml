@@ -30,6 +30,7 @@
             Grid.Row="0"
             HorizontalAlignment="Stretch"
             HorizontalContentAlignment="Stretch"
-            Background="Transparent" />
+            Background="Transparent"
+            BorderBrush="Transparent" />
     </Grid>
 </UserControl>
