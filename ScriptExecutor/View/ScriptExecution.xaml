@@ -90,9 +90,11 @@
                         BorderThickness="1"
                         CornerRadius="3">
                         <input:SearchInputBox
+                            x:Name="searchBoxItems"
                             Margin="3,0,3,0"
                             HorizontalAlignment="Stretch"
-                            Background="Transparent" />
+                            Background="Transparent"
+                            InputChanged="searchBoxItems_InputChanged" />
                     </Border>
                 </Grid>
 

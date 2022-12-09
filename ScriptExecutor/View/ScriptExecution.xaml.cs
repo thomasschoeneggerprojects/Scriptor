@@ -67,5 +67,10 @@ namespace ScriptExecutorLib.View
         {
             VM.DeleteSelectedExecutionItem();
         }
+
+        private void searchBoxItems_InputChanged(object sender, string text)
+        {
+            VM.SearchTextChanged(text);
+        }
     }
 }

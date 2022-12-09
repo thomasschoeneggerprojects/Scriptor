@@ -19,6 +19,8 @@ namespace ScriptExecutorLib.ViewModel
         private readonly IExecutionItemManager _executionItemManager;
         private readonly IExecutionItemProcessor _executionItemProcessor;
 
+        private List<ExecutionItem> _allItems;
+
         public ScriptExecutionViewModel(IExecutionItemManager executionItemManager,
             IExecutionItemProcessor executionItemProcessor)
         {
@@ -35,16 +37,18 @@ namespace ScriptExecutorLib.ViewModel
             _executionItemManager.ItemAdded += ItemsInStorageChanged;
             _executionItemManager.ItemUpdated += ItemsInStorageChanged;
 
-            var allItems = await _executionItemManager.GetAll();
-            _FillItemList(allItems);
+            _allItems = await _executionItemManager.GetAll();
+            var filteredItems = FilterBySearchText(_allItems, _searchText);
+            _FillItemList(filteredItems);
         }
 
         private void ItemsInStorageChanged(object? sender, ExecutionItemId executionItemId)
         {
             Task.Run(async () =>
             {
-                var allItems = await _executionItemManager.GetAll();
-                _FillItemList(allItems);
+                _allItems = await _executionItemManager.GetAll();
+                var filteredItems = FilterBySearchText(_allItems, _searchText);
+                _FillItemList(filteredItems);
             });
         }
 
@@ -186,6 +190,30 @@ namespace ScriptExecutorLib.ViewModel
             await _executionItemManager.Delete(selectedItem.Item);
 
             //SetItems(ExecutionItems);
+        }
+
+        private string _searchText = string.Empty;
+
+        internal void SearchTextChanged(string searchText)
+        {
+            _searchText = searchText;
+            var filteredItems = FilterBySearchText(_allItems, _searchText);
+            _FillItemList(filteredItems);
+        }
+
+        private List<ExecutionItem> FilterBySearchText(List<ExecutionItem> items, string searchText)
+        {
+            List<ExecutionItem> filteredItems = new List<ExecutionItem>();
+
+            foreach (var exItem in items)
+            {
+                if (exItem.Name.Contains(searchText))
+                {
+                    filteredItems.Add(exItem);
+                }
+            }
+
+            return filteredItems;
         }
 
         #endregion Execution items list

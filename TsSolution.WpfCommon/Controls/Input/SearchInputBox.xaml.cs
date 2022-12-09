@@ -23,11 +23,14 @@ namespace TsSolutions.WpfCommon.Controls.Input
         public SearchInputBox()
         {
             InitializeComponent();
-            textBoxSearch.InputChanged += (o, e) => OnSearchEvent(e);
+            textBoxSearch.InputChanged += (o, e) => OnSearchEvent(o, e);
         }
 
-        private void OnSearchEvent(string text)
+        public event System.EventHandler<string> InputChanged;
+
+        private void OnSearchEvent(object o, string text)
         {
+            InputChanged?.Invoke(o, text);
         }
     }
 }
