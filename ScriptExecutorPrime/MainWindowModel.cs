@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using TsSolution.WpfCommon;
+using TsSolutions.WpfCommon.Controls.Input;
+using TsSolutions.WpfCommon.TestViews;
 
 namespace ScriptExecutorPrime
 {
@@ -32,6 +34,11 @@ namespace ScriptExecutorPrime
                 return;
             }
             Content = new ScriptManagementView();
+        }
+
+        internal void SetTestUIControlsContent()
+        {
+            Content = new TestRtbEditorView();
         }
 
         private UserControl content;

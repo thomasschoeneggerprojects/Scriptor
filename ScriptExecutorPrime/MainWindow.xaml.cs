@@ -38,5 +38,10 @@ namespace ScriptExecutorPrime
         {
             VM.SetCreateTestScriptsContent();
         }
+
+        private void buttonTestUiControls_Click(object sender, RoutedEventArgs e)
+        {
+            VM.SetTestUIControlsContent();
+        }
     }
 }

@@ -39,6 +39,20 @@
                     Grid.ColumnSpan="2"
                     Margin="5,0,5,0"
                     VerticalAlignment="Bottom" />
+                <Button
+                    x:Name="buttonTestUiControls"
+                    Grid.Row="1"
+                    Margin="1"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Click="buttonTestUiControls_Click">
+                    Test UI Controls
+                </Button>
+                <Separator
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    Margin="5,0,5,0"
+                    VerticalAlignment="Bottom" />
             </Grid>
 
             <Grid x:Name="gridContent" Grid.Column="1">
