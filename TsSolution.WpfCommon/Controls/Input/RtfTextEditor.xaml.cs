@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,6 +25,14 @@ namespace TsSolutions.WpfCommon.Controls.Input
         public RtfTextEditor()
         {
             InitializeComponent();
+            InitControl();
+        }
+
+        //private bool _isInitalized = false;
+        // public bool IsControlInitialized => _isInitalized;
+
+        private void InitControl()
+        {
             cmbFontFamily.ItemsSource = Fonts.SystemFontFamilies.OrderBy(f => f.Source);
             cmbFontSize.ItemsSource = new List<double>() { 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72 };
         }
@@ -140,76 +149,6 @@ namespace TsSolutions.WpfCommon.Controls.Input
             }
         }
 
-        private void TestButtonInsertTable_Click(object sender, RoutedEventArgs e)
-        {
-            var table = CreateTable();
-
-            RtbEditor.Document.Blocks.Add(table);
-
-            RtbEditor.AppendText(" ");
-        }
-
-        private Table CreateTable()
-        {
-            var tab = new Table();
-            var gridLenghtConvertor = new GridLengthConverter();
-
-            tab.Columns.Add(new TableColumn() { Name = "Column1", Width = (GridLength)gridLenghtConvertor.ConvertFromString("*") });
-            tab.Columns.Add(new TableColumn() { Name = "Column2", Width = (GridLength)gridLenghtConvertor.ConvertFromString("*") });
-
-            tab.RowGroups.Add(new TableRowGroup());
-
-            for (int i = 0; i < 10; i++)
-            {
-                tab.RowGroups[0].Rows.Add(new TableRow());
-                var tabRow = tab.RowGroups[0].Rows[i];
-
-                tabRow.Cells.Add(new TableCell(new Paragraph(new Run("Row" + (i + 1).ToString() + " Column1"))) { TextAlignment = TextAlignment.Center });
-                tabRow.Cells.Add(new TableCell(new Paragraph(new Run("Row" + (i + 1).ToString() + " Column2"))));
-            }
-            tab.BorderBrush = Brushes.Black;
-            tab.BorderThickness = new Thickness(1);
-
-            return tab;
-        }
-
-        private static String CreateTable(int rows, int cols, int width)
-        {
-            //Create StringBuilder Instance
-            StringBuilder sringTableRtf = new StringBuilder();
-
-            //beginning of rich text format
-            sringTableRtf.Append(@"{\rtf1 ");
-
-            //Variable for cell width
-            int cellWidth;
-
-            //Start row
-            sringTableRtf.Append(@"\trowd");
-
-            //Loop to create table string
-            for (int i = 0; i < rows; i++)
-            {
-                sringTableRtf.Append(@"\trowd");
-
-                for (int j = 0; j < cols; j++)
-                {
-                    //Calculate cell end point for each cell
-                    cellWidth = (j + 1) * width;
-
-                    //A cell with width 1000 in each iteration.
-                    sringTableRtf.Append(@"\cellx" + cellWidth.ToString());
-                }
-
-                //Append the row in StringBuilder
-                sringTableRtf.Append(@"\intbl \cell \row");
-            }
-            sringTableRtf.Append(@"\pard");
-            sringTableRtf.Append(@"}");
-
-            return sringTableRtf.ToString();
-        }
-
         private void btnBold_Click(object sender, RoutedEventArgs e)
         {
             object fontweight = RtbEditor.Selection.GetPropertyValue(Inline.FontWeightProperty);
@@ -222,6 +161,165 @@ namespace TsSolutions.WpfCommon.Controls.Input
             else
             {
                 RtbEditor.Selection.ApplyPropertyValue(Inline.FontWeightProperty, FontWeights.Bold);
+            }
+            RtbEditor.Focus();
+        }
+
+        private void btnUnderline_Checked(object sender, RoutedEventArgs e)
+        {
+            object fontStyle = RtbEditor.Selection.GetPropertyValue(Inline.TextDecorationsProperty);
+            btnUnderline.IsChecked = (fontStyle != DependencyProperty.UnsetValue) && (fontStyle.Equals(TextDecorations.Underline));
+
+            if (btnUnderline.IsChecked.Value)
+            {
+                RtbEditor.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Baseline);
+            }
+            else
+            {
+                RtbEditor.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Underline);
+            }
+            RtbEditor.Focus();
+        }
+
+        private void btnItalic_Checked(object sender, RoutedEventArgs e)
+        {
+            object textDeco = RtbEditor.Selection.GetPropertyValue(Inline.FontStyleProperty);
+            btnItalic.IsChecked = (textDeco != DependencyProperty.UnsetValue) && (textDeco.Equals(FontStyles.Italic));
+
+            if (btnItalic.IsChecked.Value)
+            {
+                RtbEditor.Selection.ApplyPropertyValue(Inline.FontStyleProperty, FontStyles.Normal);
+            }
+            else
+            {
+                RtbEditor.Selection.ApplyPropertyValue(Inline.FontStyleProperty, FontStyles.Italic);
+            }
+            RtbEditor.Focus();
+        }
+
+        private void RtbEditor_GotFocus(object sender, RoutedEventArgs e)
+        {
+            CollapseAllContentsVisibilities();
+        }
+
+        #region Insert table
+
+        private void ButtonOpenInsertTable_Click(object sender, RoutedEventArgs e)
+        {
+            if (contentInsertTable.Visibility == Visibility.Collapsed)
+            {
+                contentInsertTable.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                CollapseAllContentsVisibilities();
+            }
+        }
+
+        private void ButtonInsertTable_Click(object sender, RoutedEventArgs e)
+        {
+            var countRows = int.Parse(countRowsInsertTable.Text);
+            var countColumns = int.Parse(countColumnsInsertTable.Text);
+
+            var table = CreateTable(countRows, countColumns);
+
+            RtbEditor.Document.Blocks.Add(table);
+
+            RtbEditor.AppendText(" ");
+
+            contentInsertTable.Visibility = Visibility.Collapsed;
+        }
+
+        private Table CreateTable(int rows, int columns)
+        {
+            string id = Guid.NewGuid().ToString();
+            var tab = new Table() { Name = $"Table" };
+            var gridLenghtConvertor = new GridLengthConverter();
+
+            for (int colNo = 0; colNo < columns; colNo++)
+            {
+                tab.Columns.Add(new TableColumn() { Name = $"Column{colNo}", Width = (GridLength)gridLenghtConvertor.ConvertFromString("*") });
+            }
+
+            tab.RowGroups.Add(new TableRowGroup());
+
+            for (int rowNo = 0; rowNo < rows; rowNo++)
+            {
+                tab.RowGroups[0].Rows.Add(new TableRow());
+                var tabRow = tab.RowGroups[0].Rows[rowNo];
+
+                for (int colNo = 0; colNo < columns; colNo++)
+                {
+                    tabRow.Cells.Add(new TableCell(new Paragraph(new Run(" ")))
+                    { TextAlignment = TextAlignment.Center, BorderBrush = Brushes.Black, BorderThickness = new Thickness(1) });
+                }
+            }
+            tab.CellSpacing = 0;
+
+            return tab;
+        }
+
+        #endregion Insert table
+
+        private void ButtonSetColor_Click(object sender, RoutedEventArgs e)
+        {
+            var colorAsText = SelectedColor.Text;
+            var color = new BrushConverter().ConvertFromString(colorAsText) as SolidColorBrush;
+            //consider Picture selection
+            object textForeground = RtbEditor.Selection.GetPropertyValue(Inline.ForegroundProperty);
+            var isred = (textForeground != DependencyProperty.UnsetValue) && (textForeground.Equals(Brushes.Red));
+            RtbEditor.Selection.ApplyPropertyValue(Inline.ForegroundProperty, color);
+
+            RtbEditor.Focus();
+        }
+
+        private void ButtonOpenSetColorMenue_Click(object sender, RoutedEventArgs e)
+        {
+            if (contentSetColor.Visibility == Visibility.Collapsed)
+            {
+                contentSetColor.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                CollapseAllContentsVisibilities();
+            }
+        }
+
+        private void CollapseAllContentsVisibilities()
+        {
+            contentSetColor.Visibility = Visibility.Collapsed;
+            contentInsertTable.Visibility = Visibility.Collapsed;
+        }
+
+        private void SelectedColor_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!IsInitialized)
+                return;
+
+            var textBox = sender as TextBox;
+
+            if (textBox != null)
+            {
+                var inputText = textBox.Text;
+                Regex myRegex = new Regex("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$");
+                bool isValid = false;
+                if (string.IsNullOrEmpty(inputText))
+                {
+                    isValid = false;
+                }
+                else
+                {
+                    isValid = myRegex.IsMatch(inputText);
+                }
+
+                if (isValid)
+                {
+                    var converter = new BrushConverter();
+
+                    var color = converter.ConvertFromString(inputText) as SolidColorBrush;
+
+                    ColorPreview.Fill = color;
+                }
             }
         }
     }

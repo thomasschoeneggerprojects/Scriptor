@@ -4,56 +4,189 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:TsSolutions.WpfCommon.Controls.Input"
+    xmlns:material="clr-namespace:TsSolution.WpfCommon.Resources.Icons"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+
     <Grid>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="25" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+        <Border BorderBrush="Gray" BorderThickness="1">
+            <Grid Margin="2" Background="LightGray">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                <Button x:Name="TestButtonInsertTable" Click="TestButtonInsertTable_Click">Insert Test Table</Button>
-                <ToggleButton
-                    x:Name="btnBold"
-                    Width="30"
-                    Click="btnBold_Click"
-                    Content="B"
-                    FontWeight="Bold" />
-                <ToggleButton
-                    x:Name="btnItalic"
-                    Width="30"
-                    Content="I"
-                    FontStyle="Italic" />
-                <ToggleButton
-                    x:Name="btnUnderline"
-                    Width="30"
-                    Content="U" />
-                <ComboBox
-                    x:Name="cmbFontFamily"
-                    Width="150"
-                    SelectionChanged="cmbFontFamily_SelectionChanged" />
-                <ComboBox
-                    x:Name="cmbFontSize"
-                    Width="99"
-                    IsEditable="True"
-                    TextBoxBase.TextChanged="cmbFontSize_TextChanged" />
-            </StackPanel>
+                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 
-            <RichTextBox
-                x:Name="RtbEditor"
-                Grid.Row="1"
-                AcceptsReturn="True"
-                AcceptsTab="True"
-                AutoWordSelection="False"
-                PreviewKeyDown="RtbEditor_PreviewKeyDown"
-                SelectionChanged="RtbEditor_SelectionChanged" />
-        </Grid>
+                    <ToggleButton
+                        x:Name="btnBold"
+                        Width="30"
+                        Click="btnBold_Click"
+                        Content="B"
+                        FontWeight="Bold"
+                        ToolTip="Bold" />
+                    <ToggleButton
+                        x:Name="btnItalic"
+                        Width="30"
+                        Checked="btnItalic_Checked"
+                        Content="I"
+                        FontStyle="Italic"
+                        ToolTip="Italic" />
+                    <ToggleButton
+                        x:Name="btnUnderline"
+                        Width="30"
+                        Checked="btnUnderline_Checked"
+                        Content="U"
+                        ToolTip="Undeline" />
+                    <ComboBox
+                        x:Name="cmbFontFamily"
+                        Width="150"
+                        SelectionChanged="cmbFontFamily_SelectionChanged" />
+                    <ComboBox
+                        x:Name="cmbFontSize"
+                        Width="99"
+                        IsEditable="True"
+                        TextBoxBase.TextChanged="cmbFontSize_TextChanged" />
+                    <Button
+                        x:Name="ButtonOpenInsertTable"
+                        Width="25"
+                        Click="ButtonOpenInsertTable_Click"
+                        ToolTip="Insert Table">
+                        <Path
+                            Width="15"
+                            Height="15"
+                            Margin="0"
+                            Data="{x:Static material:Material.TableChart}"
+                            Fill="Black"
+                            Stretch="Fill" />
+                    </Button>
+                    <Button
+                        x:Name="ButtonOpenSetColorMenue"
+                        Width="25"
+                        Click="ButtonOpenSetColorMenue_Click"
+                        ToolTip="Set Font Color">
+                        <Path
+                            Width="15"
+                            Height="15"
+                            Margin="0"
+                            Data="{x:Static material:Material.Colorize}"
+                            Fill="Black"
+                            Stretch="Fill" />
+                    </Button>
+                </StackPanel>
+
+                <Grid
+                    x:Name="gridSubmenu"
+                    Grid.Row="1"
+                    Background="LightGray">
+                    <Border
+                        x:Name="contentInsertTable"
+                        BorderBrush="Gray"
+                        BorderThickness="1"
+                        Visibility="Collapsed">
+                        <Grid Margin="2">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="579*" />
+                                <ColumnDefinition Width="11*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Label>Table</Label>
+                            <TextBox
+                                x:Name="countRowsInsertTable"
+                                Grid.Column="1"
+                                VerticalAlignment="Center">
+                                3
+                            </TextBox>
+                            <Label Grid.Column="2">x</Label>
+                            <TextBox
+                                x:Name="countColumnsInsertTable"
+                                Grid.Column="3"
+                                VerticalAlignment="Center">
+                                3
+                            </TextBox>
+                            <Button
+                                x:Name="ButtonInsertTable"
+                                Grid.Column="5"
+                                Click="ButtonInsertTable_Click">
+                                Insert
+                            </Button>
+                        </Grid>
+                    </Border>
+                    <Border
+                        x:Name="contentSetColor"
+                        BorderBrush="Gray"
+                        BorderThickness="1"
+                        Visibility="Visible">
+                        <Grid Margin="2">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="50" />
+                            </Grid.ColumnDefinitions>
+
+                            <Label>Text Color</Label>
+                            <TextBox
+                                x:Name="SelectedColor"
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                TextChanged="SelectedColor_TextChanged">
+                                #333333
+                            </TextBox>
+                            <Rectangle
+                                x:Name="ColorPreview"
+                                Grid.Column="2"
+                                Width="15"
+                                Height="15"
+                                Fill="Black" />
+                            <Button
+                                x:Name="ButtonSetColor"
+                                Grid.Column="5"
+                                Click="ButtonSetColor_Click">
+                                Apply
+                            </Button>
+                        </Grid>
+                    </Border>
+                </Grid>
+                <RichTextBox
+                    x:Name="RtbEditor"
+                    Grid.Row="2"
+                    AcceptsReturn="True"
+                    AcceptsTab="True"
+                    AutoWordSelection="False"
+                    GotFocus="RtbEditor_GotFocus"
+                    PreviewKeyDown="RtbEditor_PreviewKeyDown"
+                    ScrollViewer.CanContentScroll="True"
+                    ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                    SelectionChanged="RtbEditor_SelectionChanged">
+                    <RichTextBox.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}" />
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{x:Static SystemColors.HighlightTextColor}" />
+                    </RichTextBox.Resources>
+                </RichTextBox>
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>

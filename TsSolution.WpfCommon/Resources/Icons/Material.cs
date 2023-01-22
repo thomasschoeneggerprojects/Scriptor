@@ -24,6 +24,11 @@ namespace TsSolution.WpfCommon.Resources.Icons
         public static Geometry PlayArrow = Geometry.Parse("M10 8.64L15.27 12 10 15.36V8.64M8 5v14l11-7L8 5z");
 
         public static Geometry Search = Geometry.Parse("M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z");
+
+        public static Geometry TableChart = Geometry.Parse("M10 10.02h5V21h-5zM17 21h3c1.1 0 2-.9 2-2v-9h-5v11zm3-18H5c-1.1 0-2 .9-2 2v3h19V5c0-1.1-.9-2-2-2zM3 19c0 1.1.9 2 2 2h3V10H3v9z");
+
+        public static Geometry Colorize = Geometry.Parse("M20.71 5.63l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-3.12 3.12-1.93-1.91-1.41 1.41 1.42 1.42L3 16.25V21h4.75l8.92-8.92 1.42 1.42 1.41-1.41-1.92-1.92 3.12-3.12c.4-.4.4-1.03.01-1.42zM6.92 19L5 17.08l8.06-8.06 1.92 1.92L6.92 19z");
+
         /*
         public static Geometry xxx = Geometry.Parse("");
         public static Geometry xxx = Geometry.Parse("");
