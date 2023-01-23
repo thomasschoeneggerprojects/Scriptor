@@ -58,12 +58,16 @@ namespace TsSolution.WpfCommon
 
         #endregion Initialization View Model
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        #region Property Changed
+
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        #endregion Property Changed
 
         #region UI thread execution
 

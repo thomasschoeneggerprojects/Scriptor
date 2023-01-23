@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -197,23 +198,15 @@ namespace TsSolutions.WpfCommon.Controls.Input
             RtbEditor.Focus();
         }
 
-        private void RtbEditor_GotFocus(object sender, RoutedEventArgs e)
-        {
-            CollapseAllContentsVisibilities();
-        }
-
         #region Insert table
 
         private void ButtonOpenInsertTable_Click(object sender, RoutedEventArgs e)
         {
-            if (contentInsertTable.Visibility == Visibility.Collapsed)
-            {
-                contentInsertTable.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                CollapseAllContentsVisibilities();
-            }
+            var visibility = GetVisibilityToSet(contentInsertTable);
+            CollapseAllContentsVisibilities();
+            contentInsertTable.Visibility = visibility;
+
+            KeepSelectionVisible();
         }
 
         private void ButtonInsertTable_Click(object sender, RoutedEventArgs e)
@@ -261,6 +254,17 @@ namespace TsSolutions.WpfCommon.Controls.Input
 
         #endregion Insert table
 
+        #region Set Text Color
+
+        private void ButtonOpenSetColorMenue_Click(object sender, RoutedEventArgs e)
+        {
+            var visibility = GetVisibilityToSet(contentSetColor);
+            CollapseAllContentsVisibilities();
+            contentSetColor.Visibility = visibility;
+
+            KeepSelectionVisible();
+        }
+
         private void ButtonSetColor_Click(object sender, RoutedEventArgs e)
         {
             var colorAsText = SelectedColor.Text;
@@ -273,34 +277,14 @@ namespace TsSolutions.WpfCommon.Controls.Input
             RtbEditor.Focus();
         }
 
-        private void ButtonOpenSetColorMenue_Click(object sender, RoutedEventArgs e)
-        {
-            if (contentSetColor.Visibility == Visibility.Collapsed)
-            {
-                contentSetColor.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                CollapseAllContentsVisibilities();
-            }
-        }
-
-        private void CollapseAllContentsVisibilities()
-        {
-            contentSetColor.Visibility = Visibility.Collapsed;
-            contentInsertTable.Visibility = Visibility.Collapsed;
-        }
-
         private void SelectedColor_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (!IsInitialized)
                 return;
 
-            var textBox = sender as TextBox;
-
-            if (textBox != null)
+            if (sender is TextBox textbox)
             {
-                var inputText = textBox.Text;
+                var inputText = textbox.Text;
                 Regex myRegex = new Regex("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$");
                 bool isValid = false;
                 if (string.IsNullOrEmpty(inputText))
@@ -322,5 +306,93 @@ namespace TsSolutions.WpfCommon.Controls.Input
                 }
             }
         }
+
+        #endregion Set Text Color
+
+        #region Hyperlink
+
+        private void ButtonOpenSetHyperlinkMenue_Click(object sender, RoutedEventArgs e)
+        {
+            var visibility = GetVisibilityToSet(ContentSetHypelink);
+            CollapseAllContentsVisibilities();
+            ContentSetHypelink.Visibility = visibility;
+
+            KeepSelectionVisible();
+        }
+
+        private void ButtonSetHyperlink_Click(object sender, RoutedEventArgs e)
+        {
+            var linkText = SelectedHyperlinkName.Text;
+            var urlText = SelectedHyperlinkUrl.Text;
+
+            var hyperlink = CreateHyperlink(linkText, urlText);
+
+            RtbEditor.Document.Blocks.Add(hyperlink);
+
+            RtbEditor.AppendText(" ");
+
+            ContentSetHypelink.Visibility = Visibility.Collapsed;
+        }
+
+        private Paragraph CreateHyperlink(string linkName, string linkUrl)
+        {
+            Paragraph paragraph = new Paragraph();
+            paragraph.Margin = new Thickness(0);
+
+            Hyperlink hyperLink = new Hyperlink();
+            hyperLink.IsEnabled = true;
+            hyperLink.Inlines.Add(linkName);
+            hyperLink.NavigateUri = new Uri(linkUrl);
+            paragraph.Inlines.Add(hyperLink);
+
+            return paragraph;
+        }
+
+        private void RtbEditor_HyperlinkClick(object sender, RoutedEventArgs e)
+        {
+            if (e.Source is Hyperlink hyperLink)
+            {
+                var linkText = hyperLink.NavigateUri.ToString();
+                Process.Start("explorer", linkText);
+            }
+        }
+
+        #endregion Hyperlink
+
+        private void CollapseAllContentsVisibilities()
+        {
+            contentSetColor.Visibility = Visibility.Collapsed;
+            contentInsertTable.Visibility = Visibility.Collapsed;
+            ContentSetHypelink.Visibility = Visibility.Collapsed;
+        }
+
+        #region Visibility Handling
+
+        private bool _keepSelectionVisible = false;
+
+        private void KeepSelectionVisible()
+        {
+            _keepSelectionVisible = true;
+            RtbEditor.Focus();
+            _keepSelectionVisible = false;
+        }
+
+        private void RtbEditor_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (!_keepSelectionVisible)
+                CollapseAllContentsVisibilities();
+        }
+
+        private Visibility GetVisibilityToSet(Border contentBorder)
+        {
+            if (contentBorder.Visibility == Visibility.Collapsed)
+            {
+                return Visibility.Visible;
+            }
+
+            return Visibility.Collapsed;
+        }
+
+        #endregion Visibility Handling
     }
 }

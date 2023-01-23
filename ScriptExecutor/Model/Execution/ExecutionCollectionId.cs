@@ -42,7 +42,7 @@ namespace ScriptExecutorLib.Model.Execution
         }
 
         /// <inheritdoc/>
-        public override bool Equals(object other)
+        public override bool Equals(object? other)
         {
             return other is ExecutionCollectionId && Equals((ExecutionCollectionId)other);
         }

@@ -19,8 +19,9 @@ namespace ScriptExecutorLib.UserControls
 
         private ExecutionItem _executionItem;
 
-        protected override async Task OnLoadingAfterInitializeAsync()
+        protected override Task OnLoadingAfterInitializeAsync()
         {
+            return Task.CompletedTask;
         }
 
         internal void SetItem(ExecutionItem executionItem)

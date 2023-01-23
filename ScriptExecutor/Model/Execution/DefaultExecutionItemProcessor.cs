@@ -10,7 +10,7 @@ namespace ScriptExecutorLib.Model.Execution
 {
     internal class DefaultExecutionItemProcessor : IExecutionItemProcessor
     {
-        private Process _CurrentRunningProcess;
+        private Process? _CurrentRunningProcess;
         private ExecutionInformation _currentExecutionInformation = ExecutionInformation.Nothing();
         private DateTimeOffset _startTime;
 

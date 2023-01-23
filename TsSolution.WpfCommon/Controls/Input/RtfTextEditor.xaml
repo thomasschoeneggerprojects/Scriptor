@@ -79,6 +79,19 @@
                             Fill="Black"
                             Stretch="Fill" />
                     </Button>
+                    <Button
+                        x:Name="ButtonOpenSetHyperlinkMenue"
+                        Width="25"
+                        Click="ButtonOpenSetHyperlinkMenue_Click"
+                        ToolTip="Set Hyperlink">
+                        <Path
+                            Width="15"
+                            Height="15"
+                            Margin="0"
+                            Data="{x:Static material:Material.AddLink}"
+                            Fill="Black"
+                            Stretch="Fill" />
+                    </Button>
                 </StackPanel>
 
                 <Grid
@@ -132,7 +145,7 @@
                         x:Name="contentSetColor"
                         BorderBrush="Gray"
                         BorderThickness="1"
-                        Visibility="Visible">
+                        Visibility="Collapsed">
                         <Grid Margin="2">
 
                             <Grid.RowDefinitions>
@@ -169,6 +182,48 @@
                             </Button>
                         </Grid>
                     </Border>
+                    <Border
+                        x:Name="ContentSetHypelink"
+                        BorderBrush="Gray"
+                        BorderThickness="1"
+                        Visibility="Collapsed">
+                        <Grid Margin="2">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="50" />
+                            </Grid.ColumnDefinitions>
+
+                            <Label>Hypelink Name</Label>
+                            <TextBox
+                                x:Name="SelectedHyperlinkName"
+                                Grid.Column="1"
+                                VerticalAlignment="Center">
+                                Hyperlink Name
+                            </TextBox>
+                            <Label Grid.Column="2" HorizontalContentAlignment="Center">Hypelink Url</Label>
+                            <TextBox
+                                x:Name="SelectedHyperlinkUrl"
+                                Grid.Column="3"
+                                VerticalAlignment="Center">
+                                https://www.google.com
+                            </TextBox>
+
+                            <Button
+                                x:Name="ButtonSetHyperlink"
+                                Grid.Column="5"
+                                Click="ButtonSetHyperlink_Click">
+                                Apply
+                            </Button>
+                        </Grid>
+                    </Border>
                 </Grid>
                 <RichTextBox
                     x:Name="RtbEditor"
@@ -177,6 +232,8 @@
                     AcceptsTab="True"
                     AutoWordSelection="False"
                     GotFocus="RtbEditor_GotFocus"
+                    Hyperlink.Click="RtbEditor_HyperlinkClick"
+                    IsDocumentEnabled="True"
                     PreviewKeyDown="RtbEditor_PreviewKeyDown"
                     ScrollViewer.CanContentScroll="True"
                     ScrollViewer.HorizontalScrollBarVisibility="Auto"

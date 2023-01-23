@@ -18,8 +18,9 @@ namespace ScriptExecutorPrime
         {
         }
 
-        protected override async Task OnLoadingAfterInitializeAsync()
+        protected override Task OnLoadingAfterInitializeAsync()
         {
+            return Task.CompletedTask;
         }
 
         internal void SetDefaultContent()

@@ -42,7 +42,7 @@ namespace ScriptExecutor.Model
         }
 
         /// <inheritdoc/>
-        public override Boolean Equals(Object other)
+        public override Boolean Equals(object? other)
         {
             return other is ScriptExecutorIssueSeverityId && Equals((ScriptExecutorIssueSeverityId)other);
         }

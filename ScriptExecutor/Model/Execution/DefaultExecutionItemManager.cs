@@ -83,9 +83,9 @@ namespace ScriptExecutorLib.Model.Execution
             throw new NotImplementedException();
         }
 
-        public async Task<List<ExecutionItem>> GetAll()
+        public Task<List<ExecutionItem>> GetAll()
         {
-            return _repository.AllItems;
+            return Task.FromResult(_repository.AllItems);
         }
 
         public Task<ExecutionItem> GetById(ExecutionItemId id)

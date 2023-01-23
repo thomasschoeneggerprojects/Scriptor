@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Security.Principal;
 
 namespace ScriptExecutor.Model
 {
@@ -42,7 +41,7 @@ namespace ScriptExecutor.Model
         }
 
         /// <inheritdoc/>
-        public override Boolean Equals(Object other)
+        public override Boolean Equals(object? other)
         {
             return other is ScriptExecutorIssueId && Equals((ScriptExecutorIssueId)other);
         }
