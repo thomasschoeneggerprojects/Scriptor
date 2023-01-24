@@ -202,11 +202,7 @@ namespace TsSolutions.WpfCommon.Controls.Input
 
         private void ButtonOpenInsertTable_Click(object sender, RoutedEventArgs e)
         {
-            var visibility = GetVisibilityToSet(contentInsertTable);
-            CollapseAllContentsVisibilities();
-            contentInsertTable.Visibility = visibility;
-
-            KeepSelectionVisible();
+            HandleVisibilityOpenMenueClick(contentInsertTable);
         }
 
         private void ButtonInsertTable_Click(object sender, RoutedEventArgs e)
@@ -258,11 +254,7 @@ namespace TsSolutions.WpfCommon.Controls.Input
 
         private void ButtonOpenSetColorMenue_Click(object sender, RoutedEventArgs e)
         {
-            var visibility = GetVisibilityToSet(contentSetColor);
-            CollapseAllContentsVisibilities();
-            contentSetColor.Visibility = visibility;
-
-            KeepSelectionVisible();
+            HandleVisibilityOpenMenueClick(contentSetColor);
         }
 
         private void ButtonSetColor_Click(object sender, RoutedEventArgs e)
@@ -313,11 +305,7 @@ namespace TsSolutions.WpfCommon.Controls.Input
 
         private void ButtonOpenSetHyperlinkMenue_Click(object sender, RoutedEventArgs e)
         {
-            var visibility = GetVisibilityToSet(ContentSetHypelink);
-            CollapseAllContentsVisibilities();
-            ContentSetHypelink.Visibility = visibility;
-
-            KeepSelectionVisible();
+            HandleVisibilityOpenMenueClick(ContentSetHypelink);
         }
 
         private void ButtonSetHyperlink_Click(object sender, RoutedEventArgs e)
@@ -383,9 +371,18 @@ namespace TsSolutions.WpfCommon.Controls.Input
                 CollapseAllContentsVisibilities();
         }
 
-        private Visibility GetVisibilityToSet(Border contentBorder)
+        private void HandleVisibilityOpenMenueClick(UIElement uiElement)
         {
-            if (contentBorder.Visibility == Visibility.Collapsed)
+            var visibility = GetVisibilityToSet(uiElement);
+            CollapseAllContentsVisibilities();
+            uiElement.Visibility = visibility;
+
+            KeepSelectionVisible();
+        }
+
+        private Visibility GetVisibilityToSet(UIElement uiElement)
+        {
+            if (uiElement.Visibility == Visibility.Collapsed)
             {
                 return Visibility.Visible;
             }

@@ -83,7 +83,7 @@
                         x:Name="ButtonOpenSetHyperlinkMenue"
                         Width="25"
                         Click="ButtonOpenSetHyperlinkMenue_Click"
-                        ToolTip="Set Hyperlink">
+                        ToolTip="Add Hyperlink">
                         <Path
                             Width="15"
                             Height="15"
@@ -231,6 +231,7 @@
                     AcceptsReturn="True"
                     AcceptsTab="True"
                     AutoWordSelection="False"
+                    Block.LineHeight="1"
                     GotFocus="RtbEditor_GotFocus"
                     Hyperlink.Click="RtbEditor_HyperlinkClick"
                     IsDocumentEnabled="True"
