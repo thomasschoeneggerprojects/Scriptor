@@ -31,9 +31,9 @@ namespace ScriptExecutorLib.ViewModel
             }
         }
 
-        protected override async Task OnLoadingAfterInitializeAsync()
+        protected override Task OnLoadingAfterInitializeAsync()
         {
-            var test = 10;
+            return Task.CompletedTask;
         }
 
         internal void SetItems(List<UserControl> items)

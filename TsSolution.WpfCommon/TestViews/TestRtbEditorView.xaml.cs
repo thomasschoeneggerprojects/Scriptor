@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TsSolutions.WpfCommon.Controls.Input;
+using TsSolutions.WpfCommon.Controls.Output;
 
 namespace TsSolutions.WpfCommon.TestViews
 {
@@ -44,6 +45,19 @@ namespace TsSolutions.WpfCommon.TestViews
         {
             string rtf = txtOutput.Text;
             editor.SetContent(TextEditorContent.Create(TextEditorContentType.Rtf, rtf));
+        }
+
+        private void buttonShowInViewer_Click(object sender, RoutedEventArgs e)
+        {
+            var rtfContent = editor.GetContent();
+            RtfTextViewer viewer = new RtfTextViewer();
+            viewer.SetContent(rtfContent);
+
+            Window container = new Window();
+            ContentControl contentControl = new ContentControl();
+            contentControl.Content = viewer;
+            container.Content = contentControl;
+            container.Show();
         }
     }
 }

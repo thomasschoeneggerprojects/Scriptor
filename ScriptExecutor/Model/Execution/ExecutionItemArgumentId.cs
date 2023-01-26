@@ -42,7 +42,7 @@ namespace ScriptExecutor.ViewModel
         }
 
         /// <inheritdoc/>
-        public override Boolean Equals(Object other)
+        public override Boolean Equals(object? other)
         {
             return other is ExecutionItemArgumentId && Equals((ExecutionItemArgumentId)other);
         }

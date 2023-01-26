@@ -38,10 +38,37 @@ namespace TsSolutions.WpfCommon.Controls.Input
             cmbFontSize.ItemsSource = new List<double>() { 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72 };
         }
 
+        internal void InsertAtSelection(string textToInsert)
+        {
+            if (RtbEditor == null)
+            {
+                return;
+            }
+
+            var caretPosition = RtbEditor.CaretPosition.GetPositionAtOffset(0,
+                                  LogicalDirection.Forward);
+
+            RtbEditor.CaretPosition.InsertTextInRun(textToInsert);
+            RtbEditor.CaretPosition = caretPosition;
+        }
+
+        internal void InsertAtSelection(TextEditorContent content)
+        {
+            if (RtbEditor == null)
+            {
+                return;
+            }
+
+            var caretPosition = RtbEditor.CaretPosition.GetPositionAtOffset(0,
+                                  LogicalDirection.Forward);
+
+            SetRtbText(content.Content, caretPosition, caretPosition);
+        }
+
         public void SetRtbText(string text, TextPointer start, TextPointer end)
         {
             MemoryStream stream = new MemoryStream(ASCIIEncoding.Default.GetBytes(text));
-            TextRange range = new TextRange(RtbEditor.Document.ContentStart, RtbEditor.Document.ContentEnd);
+            TextRange range = new TextRange(start, end);
             range.Load(stream, DataFormats.Rtf);
         }
 
@@ -110,20 +137,6 @@ namespace TsSolutions.WpfCommon.Controls.Input
             updateSelectionsByRtbEditor = false;
         }
 
-        internal void InsertAtSelection(string textToInsert)
-        {
-            if (RtbEditor == null)
-            {
-                return;
-            }
-
-            var caretPosition = RtbEditor.CaretPosition.GetPositionAtOffset(0,
-                                  LogicalDirection.Forward);
-
-            RtbEditor.CaretPosition.InsertTextInRun(textToInsert);
-            RtbEditor.CaretPosition = caretPosition;
-        }
-
         private void RtbEditor_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyboardDevice.Modifiers == ModifierKeys.Control)
@@ -133,8 +146,10 @@ namespace TsSolutions.WpfCommon.Controls.Input
                     if (Clipboard.ContainsText(TextDataFormat.Html)
                         || Clipboard.ContainsText(TextDataFormat.Rtf))
                     {
-                        string plainText = Clipboard.GetText();
-                        InsertAtSelection(plainText);
+                        string plainText = Clipboard.GetText(TextDataFormat.Rtf);
+
+                        var content = TextEditorContent.Create(TextEditorContentType.Rtf, plainText);
+                        InsertAtSelection(content);
                         e.Handled = true;
                         return;
                     }

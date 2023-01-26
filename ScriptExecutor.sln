@@ -15,7 +15,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TsSolutions.Service", "TsSo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TsSolutions.WpfCommon", "TsSolution.WpfCommon\TsSolutions.WpfCommon.csproj", "{88668733-850A-4237-A7F2-07722178C6B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptExecutorPrime", "ScriptExecutorPrime\ScriptExecutorPrime.csproj", "{C0C28713-5932-414E-AFA5-AE1B059D323D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScriptExecutorPrime", "ScriptExecutorPrime\ScriptExecutorPrime.csproj", "{C0C28713-5932-414E-AFA5-AE1B059D323D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1365378F-8F70-459A-AD1C-8189A737EF13}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

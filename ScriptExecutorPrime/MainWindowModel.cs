@@ -14,10 +14,6 @@ namespace ScriptExecutorPrime
 {
     internal class MainWindowModel : ViewModelBase
     {
-        public MainWindowModel()
-        {
-        }
-
         protected override Task OnLoadingAfterInitializeAsync()
         {
             return Task.CompletedTask;

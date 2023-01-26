@@ -17,8 +17,9 @@ namespace ScriptExecutorPrime.ViewModel
             this._executionItemManager = executionItemManager;
         }
 
-        protected override async Task OnLoadingAfterInitializeAsync()
+        protected override Task OnLoadingAfterInitializeAsync()
         {
+            return Task.CompletedTask;
         }
 
         public string _countTestScripts = "5";

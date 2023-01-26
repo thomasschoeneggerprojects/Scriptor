@@ -65,7 +65,7 @@ namespace ScriptExecutorLib.View
 
         private void buttonDeleteExecutionTemplate_Click(object sender, RoutedEventArgs e)
         {
-            VM.DeleteSelectedExecutionItem();
+            _ = VM.DeleteSelectedExecutionItem();
         }
 
         private void searchBoxItems_InputChanged(object sender, string text)

@@ -36,6 +36,14 @@
                     Click="buttonSetText_Click">
                     set Text
                 </Button>
+
+                <Button
+                    x:Name="buttonShowInViewer"
+                    Grid.Row="0"
+                    Width="100"
+                    Click="buttonShowInViewer_Click">
+                    show in Viewer
+                </Button>
             </StackPanel>
 
             <input:RtfTextEditor x:Name="editor" Grid.Row="1" />
