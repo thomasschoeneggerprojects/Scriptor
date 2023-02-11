@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ScriptExecutor\ScriptExecutorLib.csproj" />
+    <ProjectReference Include="..\ScriptExecutorLib\ScriptExecutorLib.csproj" />
     <ProjectReference Include="..\TsSolution.Security\TsSolution.Security.csproj" />
     <ProjectReference Include="..\TsSolution.WpfCommon\TsSolutions.WpfCommon.csproj" />
   </ItemGroup>

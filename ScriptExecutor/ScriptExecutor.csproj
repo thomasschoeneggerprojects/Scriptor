@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ScriptExecutor\ScriptExecutorLib.csproj" />
+    <ProjectReference Include="..\ScriptExecutorLib\ScriptExecutorLib.csproj" />
   </ItemGroup>
 
 </Project>
