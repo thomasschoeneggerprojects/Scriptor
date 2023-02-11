@@ -38,6 +38,12 @@ namespace ScriptExecutorPrime
             Content = new TestRtbEditorView();
         }
 
+        internal void SetTesTestSecurityContent()
+        {
+            //SecurityTestView
+            Content = new SecurityTestView();
+        }
+
         private UserControl content;
 
         public UserControl Content
