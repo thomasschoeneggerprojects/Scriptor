@@ -28,5 +28,10 @@ namespace ScriptExecutorLib.View
         {
 
         }
+
+        private void ButtonAddArgument_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
