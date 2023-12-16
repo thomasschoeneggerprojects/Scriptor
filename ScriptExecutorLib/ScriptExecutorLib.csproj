@@ -10,6 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\TsSolution.WpfCommon\TsSolutions.WpfCommon.csproj" />
     <ProjectReference Include="..\TsSolutions.Serialization\TsSolutions.Serialization.csproj" />
     <ProjectReference Include="..\TsSolutions.Service\TsSolutions.Service.csproj" />

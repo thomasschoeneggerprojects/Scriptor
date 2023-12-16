@@ -65,7 +65,13 @@ namespace ScriptExecutorLib.View
 
         private void buttonDeleteExecutionTemplate_Click(object sender, RoutedEventArgs e)
         {
-            _ = VM.DeleteSelectedExecutionItem();
+            var result = MessageBox.Show("Do you really want to delete selected script?", "Delete script",
+                MessageBoxButton.OKCancel, MessageBoxImage.Question);
+
+            if(result == MessageBoxResult.OK) 
+            { 
+                _ = VM.DeleteSelectedExecutionItem();
+            }
         }
 
         private void searchBoxItems_InputChanged(object sender, string text)

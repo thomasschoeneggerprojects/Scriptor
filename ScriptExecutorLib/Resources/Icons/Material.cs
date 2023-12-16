@@ -1,8 +1,4 @@
 ﻿using System.Windows.Media;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ScriptExecutorLib.Resources.Icons
 {
@@ -24,13 +20,16 @@ namespace ScriptExecutorLib.Resources.Icons
         public static Geometry PlayArrow = Geometry.Parse("M10 8.64L15.27 12 10 15.36V8.64M8 5v14l11-7L8 5z");
 
         public static Geometry Search = Geometry.Parse("M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z");
+
+        public static Geometry Save = Geometry.Parse("M840-680v480q0 33-23.5 56.5T760-120H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h480l160 160Zm-80 34L646-760H200v560h560v-446ZM480-240q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35ZM240-560h360v-160H240v160Zm-40-86v446-560 114Z");
+        
+        public static Geometry Edit = Geometry.Parse("M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z");
         /*
-        public static Geometry xxx = Geometry.Parse("");
-        public static Geometry xxx = Geometry.Parse("");
-        public static Geometry xxx = Geometry.Parse("");
-        public static Geometry xxx = Geometry.Parse("");
-        public static Geometry xxx = Geometry.Parse("");
-        public static Geometry xxx = Geometry.Parse("");
-        public static Geometry xxx = Geometry.Parse("");*/
+         public static Geometry xxx = Geometry.Parse("");
+         public static Geometry xxx = Geometry.Parse("");
+         public static Geometry xxx = Geometry.Parse("");
+         public static Geometry xxx = Geometry.Parse("");
+         public static Geometry xxx = Geometry.Parse("");
+         public static Geometry xxx = Geometry.Parse("");*/
     }
 }

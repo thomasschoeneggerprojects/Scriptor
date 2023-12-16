@@ -36,5 +36,10 @@ namespace ScriptExecutorLib.UserControls
         {
             VM.ExecuteScript();
         }
+
+        private void ButtonEditScript_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

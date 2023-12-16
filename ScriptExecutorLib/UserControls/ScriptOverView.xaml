@@ -14,6 +14,7 @@
         <Grid Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="35" />
+                <RowDefinition Height="35" />
                 <RowDefinition Height="2*" />
                 <RowDefinition Height="3*" />
                 <RowDefinition Height="30" />
@@ -22,9 +23,34 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <StackPanel HorizontalAlignment="Center">
+            <StackPanel
+                Grid.Row="0"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                
+                <Button
+                    x:Name="ButtonEditScript"
+                    Width="30"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Click="ButtonEditScript_Click"
+                    ToolTip="Close">
+                    <StackPanel>
+                        <Path
+                            Canvas.Left="25"
+                            Canvas.Top="23"
+                            Width="15"
+                            Height="15"
+                            Data="{x:Static material:Material.Edit}"
+                            Fill="Blue"
+                            Stretch="Fill" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+            <StackPanel HorizontalAlignment="Center" Grid.Row="1">
                 <Label
-                    Grid.Row="0"
+                    
                     Content="{Binding ScriptName, Mode=TwoWay, FallbackValue='Fallback Script name'}"
                     FontFamily="Cascadia Code"
                     FontSize="14"
@@ -32,7 +58,7 @@
                     Foreground="{x:Static color:AppColor.ColorText}" />
             </StackPanel>
             <Label
-                Grid.Row="1"
+                Grid.Row="2"
                 FontFamily="Cascadia Code"
                 FontSize="12"
                 FontWeight="Bold"
@@ -41,7 +67,7 @@
             </Label>
 
             <StackPanel
-                Grid.Row="3"
+                Grid.Row="4"
                 HorizontalAlignment="Right"
                 Orientation="Horizontal">
                 <Label

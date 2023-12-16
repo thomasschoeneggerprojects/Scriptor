@@ -1,7 +1,9 @@
-﻿using ScriptExecutorLib.Model.Execution;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using ScriptExecutorLib.Model.Execution;
 using ScriptExecutorLib.UserControls;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Linq;
