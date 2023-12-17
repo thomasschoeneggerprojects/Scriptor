@@ -1,4 +1,5 @@
 ﻿using ScriptExecutorLib.Model.Execution;
+using ScriptExecutorLib.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,6 +70,13 @@ namespace ScriptExecutorLib.UserControls
         internal void ExecuteScript()
         {
             _executionItemProcessor.Run(_executionItem);
+        }
+
+        internal void OpenEditScript()
+        {
+            ScriptEditUserControl content = new(_executionItem.Id);
+            var containerWindow = new ContainerWindow(content);
+            var result = containerWindow.ShowDialog();
         }
 
         #endregion Execute Script

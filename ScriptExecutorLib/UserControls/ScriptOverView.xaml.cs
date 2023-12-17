@@ -39,7 +39,7 @@ namespace ScriptExecutorLib.UserControls
 
         private void ButtonEditScript_Click(object sender, RoutedEventArgs e)
         {
-
+            VM.OpenEditScript();
         }
     }
 }

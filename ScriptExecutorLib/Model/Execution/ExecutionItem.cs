@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TsSolutions.Serialization.PropertySet;
 
 namespace ScriptExecutorLib.Model.Execution
@@ -14,8 +11,6 @@ namespace ScriptExecutorLib.Model.Execution
         public string Description { get; internal set; }
 
         public ExecutionItemId Id { get; internal set; }
-
-        public string ItemFilePath { get; internal set; }
 
         public string Content { get; internal set; }
 

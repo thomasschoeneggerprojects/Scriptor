@@ -1,32 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ScriptExecutorLib.Model.Execution;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using TsSolutions.Serialization.PropertySet;
 
 namespace ScriptExecutorLib.View
 {
     /// <summary>
     /// Interaction logic for ScriptEditUserControl.xaml
     /// </summary>
-    public partial class ScriptEditUserControl : Window
+    public partial class ScriptEditUserControl : UserControl
     {
-        public ScriptEditUserControl()
+        private IExecutionItemManager _executionItemManger;
+        private ExecutionItem _executionItem;
+        public ScriptEditUserControl(ExecutionItemId itemId)
         {
             InitializeComponent();
+            _executionItemManger = ServiceProvider.Get<IExecutionItemManager>();
+            Init(itemId);
         }
 
-        private void ButtonSaveScript_Click(object sender, RoutedEventArgs e)
+        private async void Init(ExecutionItemId itemId)
         {
+            _executionItem = await _executionItemManger.GetById(itemId);
+            TextBoxNameExecutionItem.Text = _executionItem.Name;
+            TextBoxScript.Text = _executionItem.Content;
+            TextBoxDescriptionExecutionItem.Text = _executionItem.Description;
+        }
 
+        private async void ButtonSaveScript_Click(object sender, RoutedEventArgs e)
+        {
+            ExecutionItem itemToSave = new()
+            {
+                Id = _executionItem.Id,
+                Name = TextBoxNameExecutionItem.Text,
+                Content = TextBoxScript.Text,
+                Description = TextBoxDescriptionExecutionItem.Text,
+                Arguments = new(),
+                ItemType = ExecutionItemType.Powershell,
+                Properties = new DefaultPropertySet(),
+            };
+            await _executionItemManger.Update(itemToSave);
         }
 
         private void ButtonAddArgument_Click(object sender, RoutedEventArgs e)

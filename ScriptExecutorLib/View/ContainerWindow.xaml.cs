@@ -19,9 +19,11 @@ namespace ScriptExecutorLib.View
     /// </summary>
     public partial class ContainerWindow : Window
     {
-        public ContainerWindow()
+        public ContainerWindow(UserControl content)
         {
             InitializeComponent();
+
+            UserControlContent.Content = content;
         }
     }
 }

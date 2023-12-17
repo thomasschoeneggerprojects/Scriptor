@@ -6,7 +6,7 @@ namespace TsSolutions.Serialization.PropertySet
 {
     public class DefaultPropertySet : IPropertySet
     {
-        private Dictionary<Guid, object> _properties;
+        private Dictionary<Guid, object> _properties; 
 
         public DefaultPropertySet()
         {
